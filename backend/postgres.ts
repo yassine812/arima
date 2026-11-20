@@ -70,7 +70,8 @@ export class PostgresStore {
     return (await this.query(`SELECT data FROM ${table} WHERE id=$1`, [id]))[0]?.data;
   }
   async save<K extends keyof Collections>(table: K, record: Collections[K]): Promise<Collections[K]> {
-    await this.query(`INSERT INTO ${table}(id,data) VALUES ($1,$2::jsonb)
+    // Bind JSON text as text first so drivers cannot JSON-encode it twice.
+    await this.query(`INSERT INTO ${table}(id,data) VALUES ($1,$2::text::jsonb)
       ON CONFLICT(id) DO UPDATE SET data=excluded.data`, [record.id, JSON.stringify(record)]);
     return record;
   }

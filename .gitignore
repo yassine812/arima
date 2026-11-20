@@ -20,6 +20,3 @@ __pycache__/
 data-arima-db.json
 *.pem
 *.key
-
-.vercel
-.env*

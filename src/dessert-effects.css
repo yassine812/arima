@@ -1,0 +1,45 @@
+/* Independent flavour layers move around the dessert, inside each picture. */
+.product-ingredients { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; border-radius:inherit; translate:calc(var(--parallax-x,0px) * -.35) calc(var(--parallax-y,0px) * -.35); transition:translate .5s var(--atelier-ease); }
+.ingredient-background { position:absolute; display:block; width:30%; aspect-ratio:1; animation:ingredient-background-drift var(--float-duration,26s) ease-in-out var(--float-delay,0s) infinite alternate; filter:drop-shadow(0 4px 4px #75482b20); }
+.ingredient-background-1 { left:-4%; top:-5%; width:34%; }
+.ingredient-background-2 { right:-3%; top:5%; width:30%; }
+.ingredient-background-3 { left:-6%; bottom:0; width:35%; }
+.ingredient-background-4 { right:-7%; bottom:-5%; width:32%; }
+.ingredient-background-5 { left:36%; top:-10%; width:21%; opacity:.75; }
+.ingredient-background-6 { right:-8%; top:39%; width:23%; opacity:.85; }
+.painted-ingredient { display:block; width:100%; height:100%; background-image:url('/brand/motion/ingredient-atlas-v2.webp'); background-size:400% 400%; background-repeat:no-repeat; }
+.product-visual.is-layered { background:radial-gradient(ellipse at 50% 45%,#fff7df,var(--flavour-accent)); }
+.product-flavour-backdrop { position:absolute; inset:-14%; background-size:cover; background-position:center; filter:blur(30px); opacity:.35; transform:scale(1.2); z-index:0; }
+.product-visual.is-layered>.product-foreground { position:relative; z-index:2; scale:.84; filter:drop-shadow(0 9px 9px #734a2b29); }
+.product-visual.is-layered.is-visible>.product-foreground { animation:none; transform:none; translate:0 0; }
+.product-visual.is-layered .product-ingredients { z-index:1; }
+.product-visual:not(.is-visible) .product-ingredients * { animation-play-state:paused; }
+.product-visual .product-category,.product-visual .product-edit { z-index:3; }
+@keyframes ingredient-background-drift { from { translate:-6px 7px; rotate:-3deg; } to { translate:9px -9px; rotate:4deg; } }
+
+.atelier-cursor>.cursor-dessert { position:absolute; width:32px; height:40px; top:-2px; left:-2px; max-width:none; filter:drop-shadow(1px 2px 2px #73482d40); transform-origin:2px 2px; transition:transform .2s var(--atelier-ease); }
+.atelier-cursor.is-over-action>.cursor-dessert { transform:scale(1.1); }
+.dessert-bursts { position:fixed; inset:0; overflow:hidden; z-index:140; pointer-events:none; contain:strict; }
+.atelier-pointer-layer[popover] { position:fixed; inset:0; width:100%; height:100%; max-width:none; max-height:none; margin:0; padding:0; border:0; background:transparent; overflow:visible; pointer-events:none; }
+.atelier-pointer-layer::backdrop { background:transparent; pointer-events:none; }
+.atelier-pointer-layer .atelier-cursor { z-index:150; }
+.dessert-pop { position:absolute; width:var(--pop-size,28px); height:var(--pop-size,28px); margin-left:calc(var(--pop-size,28px) / -2); margin-top:calc(var(--pop-size,28px) / -2); pointer-events:none; animation:dessert-pop 1.4s cubic-bezier(.18,.55,.45,1) both; }
+.dessert-pop>img { width:100%; height:100%; display:block; filter:drop-shadow(0 3px 3px #75452e36); }
+@keyframes dessert-pop {
+  0% { opacity:0; transform:translate3d(0,0,0) rotate(0deg) scale(.15); }
+  12% { opacity:1; }
+  44% { opacity:1; transform:translate3d(calc(var(--pop-x) * .52),var(--pop-rise),0) rotate(calc(var(--pop-rotation) * .4)) scale(1.08); }
+  78% { opacity:.9; }
+  100% { opacity:0; transform:translate3d(var(--pop-x),var(--pop-end-y),0) rotate(var(--pop-rotation)) scale(.5); }
+}
+@media (hover:hover) and (pointer:fine) { html[data-dessert-cursor="ready"],html[data-dessert-cursor="ready"] * { cursor:none!important; } }
+@media print { .product-ingredients,.dessert-bursts,.atelier-cursor { display:none!important; } }
+@media (hover:hover) and (pointer:fine) {
+  /* Keep the same arrow when the overlay is hidden or cannot cover a modal. */
+  html:not([data-dessert-cursor="ready"]),
+  html:not([data-dessert-cursor="ready"]) * { cursor:url('/brand/motion/tiramisu-arrow.svg') 2 2,auto!important; }
+  html[data-dessert-cursor="ready"]:not(:has(.atelier-pointer-layer:popover-open)) dialog:modal,
+  html[data-dessert-cursor="ready"]:not(:has(.atelier-pointer-layer:popover-open)) dialog:modal *,
+  html[data-dessert-cursor="ready"]:not(:has(.atelier-pointer-layer:popover-open)) dialog:modal::backdrop { cursor:url('/brand/motion/tiramisu-arrow.svg') 2 2,auto!important; }
+}
+@media print { .atelier-pointer-layer { display:none!important; } }

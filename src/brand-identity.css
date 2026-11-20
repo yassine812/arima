@@ -1,0 +1,25 @@
+/* ARIMA's transparent regenerated lockup and compact cake emblem. */
+.brand-logo{display:inline-flex;align-items:center;justify-content:center;position:relative;isolation:isolate;width:170px;height:108px;flex:none;overflow:visible;vertical-align:middle;background:transparent}
+.brand-logo-art{display:block;position:relative;width:100%;height:100%;animation:arima-brand-float 6.5s ease-in-out infinite;transform-origin:50% 65%}
+.brand-logo img{display:block;position:absolute;left:50%;top:50%;width:177%;max-width:none;height:auto;object-fit:contain;transform:translate(-50%,-49%);user-select:none;-webkit-user-drag:none}
+.brand-logo .brand-glint{position:absolute;z-index:1;pointer-events:none;width:9px;height:13px;background:#c89d6d;clip-path:polygon(50% 0,64% 35%,100% 50%,64% 65%,50% 100%,36% 65%,0 50%,36% 35%);animation:arima-brand-glint 4.8s ease-in-out infinite}
+.brand-logo .brand-glint-one{left:15%;top:27%}
+.brand-logo .brand-glint-two{right:14%;top:48%;width:7px;height:10px;background:#9eaf79;animation-delay:-2.1s}
+.brand-mark{width:38px;height:34px;border-radius:0}
+.brand-mark img{position:static;width:100%;height:100%;max-width:100%;transform:none}
+.brand-mark .brand-glint{display:none}
+.brand-home:hover .brand-logo-art,.brand-home:focus-visible .brand-logo-art{animation:arima-brand-greet 1s ease-in-out infinite}
+.login-story-brand .brand-logo{height:72px}
+.boot-screen .brand-logo{width:190px;height:130px}
+html[data-tab-hidden="true"] .brand-logo-art,html[data-tab-hidden="true"] .brand-logo .brand-glint{animation-play-state:paused}
+@keyframes arima-brand-float{0%,100%{transform:translateY(0) rotate(-.8deg)}50%{transform:translateY(-3px) rotate(.8deg)}}
+@keyframes arima-brand-glint{0%,100%{transform:scale(.65) rotate(-12deg);opacity:.3}50%{transform:scale(1.05) rotate(10deg);opacity:.85}}
+@keyframes arima-brand-greet{0%,100%{transform:translateY(-1px) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
+@media print{.brand-logo,.print-card .brand-logo{background:transparent!important;overflow:visible}.brand-logo-art{animation:none!important;transform:none!important}.brand-logo .brand-glint{display:none}}
+/* Keep the transparent source canvas inside the logo's layout footprint. */
+.brand-logo-art{overflow:hidden}
+.brand-logo img{width:168%}
+.brand-mark img{width:100%}
+.brand-logo.mobile-brand,.brand-logo.login-mobile-logo{display:none}
+@media(max-width:1023px){.brand-logo.mobile-brand{display:inline-flex}}
+@media(max-width:767px){.brand-logo.login-mobile-logo{display:inline-flex}}

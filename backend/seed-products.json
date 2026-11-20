@@ -1,0 +1,234 @@
+[
+  {
+    "id": "cheese_caramel",
+    "name": "Cheesecake Caramel",
+    "price": 3,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_caramel.png",
+    "description": "Cheesecake onctueux nappé de caramel au beurre salé."
+  },
+  {
+    "id": "cheese_oreo",
+    "name": "Cheesecake Oreo",
+    "price": 3,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_oreo.png",
+    "description": "Recette traditionnelle aux éclats de biscuits Oreo authentiques."
+  },
+  {
+    "id": "cheese_chocolat",
+    "name": "Cheesecake Chocolat",
+    "price": 3,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_chocolat.png",
+    "description": "Crème parfumée et ganache au chocolat noir onctueux."
+  },
+  {
+    "id": "cheese_oreo_choc",
+    "name": "Cheesecake Oreo Chocolat",
+    "price": 4,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_oreo_choc.png",
+    "description": "Le double plaisir Oreo croustillant et chocolat intense."
+  },
+  {
+    "id": "cheese_fraise",
+    "name": "Cheesecake Fraise",
+    "price": 4,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_fraise.png",
+    "description": "Coulis maison de fraises fraîches parfumées."
+  },
+  {
+    "id": "cheese_citron",
+    "name": "Cheesecake Citron",
+    "price": 4,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_citron.png",
+    "description": "Crème de citron acidulée et zestes frais."
+  },
+  {
+    "id": "cheese_noisette",
+    "name": "Cheesecake Noisette",
+    "price": 4,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_noisette.png",
+    "description": "Praliné noisette du pays haché finement."
+  },
+  {
+    "id": "cheese_pistache",
+    "name": "Cheesecake Pistache",
+    "price": 4,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_pistache.png",
+    "description": "Pistaches de Sfax torréfiées et concassées."
+  },
+  {
+    "id": "cheese_rafaello",
+    "name": "Cheesecake Raffaello",
+    "price": 4,
+    "category": "Cheesecakes",
+    "image": "/products/illustrated/cheese_rafaello.png",
+    "description": "Gourmandise à la noix de coco, chocolat blanc, amande entière et éclats de Raffaello."
+  },
+  {
+    "id": "tira_classique",
+    "name": "Tiramisu Classique",
+    "price": 3,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_classique.png",
+    "description": "Café expresso, mascarpone onctueux et cacao."
+  },
+  {
+    "id": "tira_noisette",
+    "name": "Tiramisu Noisette",
+    "price": 4,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_noisette.png",
+    "description": "Crème mascarpone au délicieux praliné noisette."
+  },
+  {
+    "id": "tira_pistache",
+    "name": "Tiramisu Pistache",
+    "price": 4,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_pistache.png",
+    "description": "Pistache tunisienne, amaretto et éclats croquants."
+  },
+  {
+    "id": "tira_fraise",
+    "name": "Tiramisu Fraise",
+    "price": 4,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_fraise.png",
+    "description": "Boudoirs imbibés d'un coulis de fraises fraîches."
+  },
+  {
+    "id": "tira_citron",
+    "name": "Tiramisu Citron",
+    "price": 4,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_citron.png",
+    "description": "Crème citron gourmande légère et mascarpone."
+  },
+  {
+    "id": "tira_framboise",
+    "name": "Tiramisu Framboise",
+    "price": 5,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_framboise.png",
+    "description": "Brisures de framboises acidulées et crème douce."
+  },
+  {
+    "id": "tira_kinder",
+    "name": "Tiramisu Kinder Bueno",
+    "price": 5,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_kinder-v2.png",
+    "description": "Nappage noisette-chocolat au lait et morceaux de Kinder Bueno."
+  },
+  {
+    "id": "tira_kids",
+    "name": "Tiramisu Kids",
+    "price": 5,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_kids.png",
+    "description": "Version gourmande avec chocolat doux et pépites."
+  },
+  {
+    "id": "tira_speculos",
+    "name": "Tiramisu Speculos",
+    "price": 5,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_speculos.png",
+    "description": "Biscuits spéculoos croquants et cannelle parfumée."
+  },
+  {
+    "id": "tira_rafaello",
+    "name": "Tiramisu Rafaello",
+    "price": 5,
+    "category": "Tiramisus",
+    "image": "/products/illustrated/tira_rafaello.png",
+    "description": "Mascarpone coco, amande entière et brisures de chocolat blanc."
+  },
+  {
+    "id": "mini_tira_classique",
+    "name": "Mini Tiramisu Classique",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Café expresso, mascarpone onctueux et cacao.",
+    "image": "/products/illustrated/mini_tira_classique.png"
+  },
+  {
+    "id": "mini_tira_noisette",
+    "name": "Mini Tiramisu Noisette",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Crème mascarpone au délicieux praliné noisette.",
+    "image": "/products/illustrated/mini_tira_noisette.png"
+  },
+  {
+    "id": "mini_tira_pistache",
+    "name": "Mini Tiramisu Pistache",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Pistache tunisienne, amaretto et éclats croquants.",
+    "image": "/products/illustrated/mini_tira_pistache.png"
+  },
+  {
+    "id": "mini_tira_fraise",
+    "name": "Mini Tiramisu Fraise",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Boudoirs imbibés d'un coulis de fraises fraîches.",
+    "image": "/products/illustrated/mini_tira_fraise.png"
+  },
+  {
+    "id": "mini_tira_citron",
+    "name": "Mini Tiramisu Citron",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Crème citron gourmande légère et mascarpone.",
+    "image": "/products/illustrated/mini_tira_citron.png"
+  },
+  {
+    "id": "mini_tira_framboise",
+    "name": "Mini Tiramisu Framboise",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Brisures de framboises acidulées et crème douce.",
+    "image": "/products/illustrated/mini_tira_framboise.png"
+  },
+  {
+    "id": "mini_tira_kinder",
+    "name": "Mini Tiramisu Kinder Bueno",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Nappage noisette-chocolat au lait et morceaux de Kinder Bueno.",
+    "image": "/products/illustrated/mini_tira_kinder.png"
+  },
+  {
+    "id": "mini_tira_kids",
+    "name": "Mini Tiramisu Kids",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Version gourmande avec chocolat doux et pépites.",
+    "image": "/products/illustrated/mini_tira_kids.png"
+  },
+  {
+    "id": "mini_tira_speculos",
+    "name": "Mini Tiramisu Speculos",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Biscuits spéculoos croquants et cannelle parfumée.",
+    "image": "/products/illustrated/mini_tira_speculos.png"
+  },
+  {
+    "id": "mini_tira_rafaello",
+    "name": "Mini Tiramisu Rafaello",
+    "price": 2,
+    "category": "Mini tiramisus",
+    "description": "Format mini à l’unité. Mascarpone coco, amande entière et brisures de chocolat blanc.",
+    "image": "/products/illustrated/mini_tira_rafaello.png"
+  }
+]

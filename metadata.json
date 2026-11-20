@@ -1,0 +1,6 @@
+{
+  "name": "Arima - Gestion des Factures",
+  "description": "Système de gestion de factures et de catalogue de pâtisseries pour Arima avec tableau de bord et export PDF.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

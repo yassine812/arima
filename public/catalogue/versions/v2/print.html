@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Imprimer le catalogue ARIMA</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#ece4d7;color:#513a33;font-family:system-ui,sans-serif}
+.print-tools{position:sticky;top:0;display:flex;align-items:center;justify-content:center;gap:16px;padding:16px;background:#fff8eb;box-shadow:0 1px 8px #513a3320;z-index:2;font-size:13px}
+.print-tools button,.print-tools a{border:1px solid #b58c70;border-radius:10px;padding:10px 15px;background:#805746;color:#fff9ef;font:inherit;text-decoration:none;cursor:pointer}
+.print-tools a{background:white;color:#805746}.print-tools button:disabled{opacity:.5}
+.print-page{width:min(210mm,100%);margin:20px auto;background:white;box-shadow:0 3px 20px #513a3320}
+.print-page img{display:block;width:100%;height:auto}
+@page{size:A4 portrait;margin:0}
+@media print{html,body{margin:0;background:white}.print-tools{display:none}.print-page{width:210mm;height:297mm;margin:0;box-shadow:none;break-after:page;page-break-after:always;overflow:hidden}.print-page:last-child{break-after:auto;page-break-after:auto}.print-page img{width:100%;height:100%;object-fit:contain}}
+</style></head><body>
+<header class="print-tools"><span id="print-status" role="status">Préparation des pages…</span><button id="print-catalogue" disabled>Imprimer</button><a href="/catalogue/versions/v2/ARIMA_Catalogue_Final.pdf" download="ARIMA_Catalogue_Final.pdf">Télécharger le PDF</a></header>
+<section class="print-page"><img src="/catalogue/versions/v2/page-01.webp" alt="Page 1 : Couverture - Le plaisir à la cuillère"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-02.webp" alt="Page 2 : La collection - Trois formats, 29 créations"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-03.webp" alt="Page 3 : CHEESECAKES - Caramel, Oreo, Chocolat"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-04.webp" alt="Page 4 : CHEESECAKES - Fraise, Citron, Pistache"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-05.webp" alt="Page 5 : CHEESECAKES - Noisette, Oreo chocolat, Raffaello"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-06.webp" alt="Page 6 : TIRAMISUS - Classique, Noisette, Spéculoos"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-07.webp" alt="Page 7 : TIRAMISUS - Fraise, Framboise, Citron"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-08.webp" alt="Page 8 : TIRAMISUS - Pistache, Raffaello"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-09.webp" alt="Page 9 : TIRAMISUS - Kinder Bueno, Kids"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-10.webp" alt="Page 10 : MINI TIRAMISUS - Classique, Noisette, Pistache, Raffaello"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-11.webp" alt="Page 11 : MINI TIRAMISUS - Fraise, Framboise, Citron"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-12.webp" alt="Page 12 : MINI TIRAMISUS - Kinder Bueno, Kids, Spéculoos"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-13.webp" alt="Page 13 : Tous les prix - Cheesecakes, tiramisus et mini tiramisus"></section>
+<section class="print-page"><img src="/catalogue/versions/v2/page-14.webp" alt="Page 14 : Commander - Contacts Maison ARIMA"></section>
+<script>
+const button=document.getElementById('print-catalogue');
+const status=document.getElementById('print-status');
+let ready=false;
+button.addEventListener('click',()=>{if(ready)window.print()});
+window.addEventListener('message',event=>{if(event.origin===location.origin&&event.data==='arima-print-catalogue'&&ready)window.print()});
+window.addEventListener('afterprint',()=>{if(window.parent!==window)window.parent.postMessage('arima-catalogue-print-finished',location.origin)});
+Promise.all(Array.from(document.images,img=>img.decode())).then(()=>{
+ ready=true;button.disabled=false;status.textContent='Le catalogue ARIMA · 14 pages';
+ if(window.parent!==window)window.parent.postMessage('arima-catalogue-print-ready',location.origin);
+ if(new URLSearchParams(location.search).get('auto')==='1')window.print();
+}).catch(()=>{status.textContent='Une page n’a pas pu être chargée. Rechargez cette fenêtre.';if(window.parent!==window)window.parent.postMessage('arima-catalogue-print-error',location.origin)});
+</script></body></html>

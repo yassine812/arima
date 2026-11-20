@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;color:#775840;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+button,a{-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid #efd0ae;outline-offset:4px}
+.reader-shell{position:relative;width:100%;height:100dvh;outline:none;background:transparent}
+.book-stage{position:absolute;inset:86px 40px 94px;display:flex;align-items:center;justify-content:center}
+#book-host{position:relative;width:min(100%,1100px);height:100%;margin:auto;translate:var(--cover-shift,0px) 0;transition:translate .45s ease}
+.book-page{background:#fffbf1;overflow:hidden;box-shadow:0 5px 22px #20161240}
+.book-page img{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.book-page::after{content:'';position:absolute;inset:0;box-shadow:inset 2px 0 5px #69492e12;pointer-events:none}
+.book-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:15px 20px;color:#805b45;background:#fff8eb;border-radius:25px;font-size:12px;white-space:nowrap}
+.book-loading[hidden]{display:none}
+.book-controls{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;white-space:nowrap}
+.book-controls button{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid #fff5e759;border-radius:50%;background:#fff8ed;color:#895d43;box-shadow:0 5px 18px #140b0830;font-size:25px;line-height:1;transition:background .2s,transform .2s,opacity .2s}
+.book-controls button:hover:not(:disabled){background:#f0d9bd;transform:translateY(-3px)}
+.book-controls button:disabled{opacity:.3;cursor:default;box-shadow:none}
+.page-counter{display:flex;align-items:center;justify-content:center;min-width:140px;height:38px;padding:0 17px;border:1px solid #fff5e740;border-radius:24px;background:#fff8ed;color:#895d43;box-shadow:0 5px 18px #140b0820;font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
+.reader-error{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:20px;background:#fff8ed;border-radius:18px;color:#9c5d4b;text-align:center;font-size:12px;line-height:1.8}
+.reader-error a{color:inherit}
+.stf__parent{position:relative;box-sizing:border-box;transform:translateZ(0);touch-action:pan-y}
+.stf__wrapper{position:relative;width:100%;height:100%!important;padding-bottom:0!important;box-sizing:border-box}
+.stf__block{position:absolute;width:100%;height:100%;box-sizing:border-box;perspective:2000px}
+.stf__item{display:none;position:absolute;transform-style:preserve-3d}
+.stf__outerShadow,.stf__innerShadow,.stf__hardShadow,.stf__hardInnerShadow{position:absolute;left:0;top:0}
+@media(max-width:767px){
+ .book-stage{inset:82px 22px 84px}
+ #book-host{width:min(100%,390px)}
+ .book-controls{bottom:23px;gap:7px}
+ .book-controls button{width:34px;height:34px;font-size:23px}
+ .page-counter{min-width:105px;height:34px;font-size:10px;padding:0 12px}
+}
+@media(max-height:480px){.book-stage{top:62px;bottom:66px}.book-controls{bottom:13px}}
+@media(hover:hover) and (pointer:fine){html,html *{cursor:url('/brand/motion/tiramisu-arrow.svg') 2 2,auto}}

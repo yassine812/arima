@@ -1,0 +1,34 @@
+.cafe-partner-note {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  margin: 24px 0;
+  background: #fffbf4;
+  border: 1px dashed #cfc4a4;
+  border-radius: 22px;
+  color: #6a503c;
+}
+.cafe-partner-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 48px;
+  height: 48px;
+  background: #eef0df;
+  border-radius: 16px;
+  color: #7c875c;
+}
+.cafe-partner-note > div { flex: 1; min-width: 0; }
+.cafe-partner-note strong { font-family: var(--font-serif); font-size: 21px; font-weight: 500; }
+.cafe-partner-note p { margin: 5px 0 0; font-size: 12px; line-height: 1.7; }
+.cafe-role-badge { padding: 8px 12px; border-radius: 10px; color: #68794c; background: #eef0df; font-size: 9px; font-weight: 800; letter-spacing: .14em; white-space: nowrap; }
+.cafe-product-card .product-card-footer { margin-bottom: 17px; }
+.cafe-order-product { width: 100%; justify-content: center; min-height: 45px; }
+.cafe-order-product svg:last-child { margin-left: auto; }
+.cafe-order-product svg:first-child { margin-right: auto; }
+@media (max-width: 640px) {
+  .cafe-partner-note { padding: 16px; gap: 12px; flex-wrap: wrap; }
+  .cafe-partner-note strong { font-size: 18px; }
+  .cafe-role-badge { margin-left: 60px; }
+  .cafe-partner-note > .btn-secondary { width: 100%; justify-content: center; }
+}

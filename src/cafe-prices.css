@@ -1,0 +1,34 @@
+.product-grid { align-items:start; }
+.product-cafe-prices { margin-top:13px; border:1px solid #e4d8bf; border-radius:13px; background:#f6f0e2; overflow:hidden; }
+.product-cafe-prices>summary { display:flex; align-items:center; gap:8px; min-height:43px; padding:9px 11px; list-style:none; font-size:11px; font-weight:600; color:#84674d; cursor:pointer; transition:background .2s; }
+.product-cafe-prices>summary::-webkit-details-marker { display:none; }
+.product-cafe-prices>summary:hover { background:#eee8d4; }
+.product-cafe-prices>summary:focus-visible { outline:2px solid #a87b73; outline-offset:-3px; border-radius:12px; }
+.cafe-price-count { display:inline-flex; align-items:center; justify-content:center; min-width:21px; height:21px; padding:0 5px; background:#e9e1cb; color:#94774f; font-size:9px; border-radius:7px; }
+.cafe-price-chevron { margin-left:auto; transition:transform .24s var(--atelier-ease); }
+.product-cafe-prices[open]>summary { background:#e9eddc; color:#6c7c54; border-bottom:1px dashed #d6dcc1; }
+.product-cafe-prices[open] .cafe-price-chevron { transform:rotate(180deg); }
+.cafe-prices-content { padding:13px 12px 10px; background:#fffcf4; }
+.product-cafe-prices[open] .cafe-prices-content { animation:cafe-prices-appear .25s var(--atelier-ease); }
+.cafe-catalogue-price { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:4px 10px; color:#8a7057; padding-bottom:11px; font-size:10px; }
+.cafe-catalogue-price strong { font-weight:600; font-variant-numeric:tabular-nums; }
+.cafe-catalogue-price small,.cafe-unit-price small { font-size:8px; font-weight:500; }
+.cafe-price-list { list-style:none; padding:0; margin:0; }
+.cafe-price-list>li { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; padding:12px 0; border-top:1px dashed #e8dac6; }
+.cafe-price-list>li>div { min-width:0; }
+.cafe-price-list>li>div>strong { display:block; color:#795b48; font-size:12px; font-weight:600; line-height:1.5; overflow-wrap:anywhere; }
+.cafe-price-list>li>div>span { display:block; margin-top:3px; font-size:10px; color:#866b55; line-height:1.5; }
+.cafe-price-list>li>div>span.is-custom-price { color:#798756; }
+.cafe-unit-price { color:#805c43; font-size:14px; font-weight:600; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.cafe-price-note,.cafe-prices-empty { margin:8px 0 1px; color:#957d64; font-size:9px; line-height:1.7; }
+@keyframes cafe-prices-appear { from { opacity:.4; translate:0 -4px; } to { opacity:1; translate:0 0; } }
+@media(max-width:599px) {
+  .product-cafe-prices>summary { gap:5px; padding:9px 7px; font-size:10px; min-height:44px; }
+  .product-cafe-prices>summary>svg:first-child { width:14px; flex:none; }
+  .cafe-price-count { min-width:18px; height:18px; font-size:8px; padding:0 3px; }
+  .cafe-price-chevron { width:13px; flex:none; }
+  .cafe-prices-content { padding:11px 8px; }
+  .cafe-price-list>li { grid-template-columns:1fr; gap:5px; padding:11px 0; }
+  .cafe-unit-price { justify-self:start; }
+  .cafe-price-list>li>div>strong { font-size:11px; }
+}

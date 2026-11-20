@@ -1,0 +1,95 @@
+[
+  {
+    "id": "original-1",
+    "filename": "Arima_Flavors_Separated_Rectangles.pdf",
+    "title": "Rectangles illustrés",
+    "group": "rectangles",
+    "description": "Tickets illustrés avec grille de découpe.",
+    "pages": 10,
+    "pdf": "/tickets/original-1.pdf",
+    "preview": "/tickets/original-1.webp",
+    "pageImages": [
+      "/tickets/original-1-page-01.webp",
+      "/tickets/original-1-page-02.webp",
+      "/tickets/original-1-page-03.webp",
+      "/tickets/original-1-page-04.webp",
+      "/tickets/original-1-page-05.webp",
+      "/tickets/original-1-page-06.webp",
+      "/tickets/original-1-page-07.webp",
+      "/tickets/original-1-page-08.webp",
+      "/tickets/original-1-page-09.webp",
+      "/tickets/original-1-page-10.webp"
+    ],
+    "print": "/tickets/original-1-print.html",
+    "sha256": "4549aa9b041d5dbe1706f3c1a1806d12008b1960aea0f4ce2efeeffa079ed4ab"
+  },
+  {
+    "id": "original-2",
+    "filename": "Arima_Flavors_4xSame_Per_Page.pdf",
+    "title": "4 tickets identiques par page",
+    "group": "rectangles",
+    "description": "Une saveur par page, quatre tickets identiques.",
+    "pages": 10,
+    "pdf": "/tickets/original-2.pdf",
+    "preview": "/tickets/original-2.webp",
+    "pageImages": [
+      "/tickets/original-2-page-01.webp",
+      "/tickets/original-2-page-02.webp",
+      "/tickets/original-2-page-03.webp",
+      "/tickets/original-2-page-04.webp",
+      "/tickets/original-2-page-05.webp",
+      "/tickets/original-2-page-06.webp",
+      "/tickets/original-2-page-07.webp",
+      "/tickets/original-2-page-08.webp",
+      "/tickets/original-2-page-09.webp",
+      "/tickets/original-2-page-10.webp"
+    ],
+    "print": "/tickets/original-2-print.html",
+    "sha256": "2594c24cf5576c7a3e2679d3e7b5f1e2d5ca9c080f8290b86214b21dec2103fc"
+  },
+  {
+    "id": "original-3",
+    "filename": "merged_ARIMA_catalog.pdf",
+    "title": "Bandelettes tiramisu",
+    "group": "tiramisu",
+    "description": "Les bandelettes de tiramisu du fichier fourni.",
+    "pages": 8,
+    "pdf": "/tickets/original-3.pdf",
+    "preview": "/tickets/original-3.webp",
+    "pageImages": [
+      "/tickets/original-3-page-01.webp",
+      "/tickets/original-3-page-02.webp",
+      "/tickets/original-3-page-03.webp",
+      "/tickets/original-3-page-04.webp",
+      "/tickets/original-3-page-05.webp",
+      "/tickets/original-3-page-06.webp",
+      "/tickets/original-3-page-07.webp",
+      "/tickets/original-3-page-08.webp"
+    ],
+    "print": "/tickets/original-3-print.html",
+    "sha256": "08e2e076ec62242e4a91597bc88ae5f126ebb2d4c18c0d53256bf0dd1ec62a59"
+  },
+  {
+    "id": "original-4",
+    "filename": "ARIMA_catalog_with_pistache.pdf",
+    "title": "Bandelettes avec pistache",
+    "group": "tiramisu",
+    "description": "Le modèle tiramisu avec la saveur pistache.",
+    "pages": 9,
+    "pdf": "/tickets/original-4.pdf",
+    "preview": "/tickets/original-4.webp",
+    "pageImages": [
+      "/tickets/original-4-page-01.webp",
+      "/tickets/original-4-page-02.webp",
+      "/tickets/original-4-page-03.webp",
+      "/tickets/original-4-page-04.webp",
+      "/tickets/original-4-page-05.webp",
+      "/tickets/original-4-page-06.webp",
+      "/tickets/original-4-page-07.webp",
+      "/tickets/original-4-page-08.webp",
+      "/tickets/original-4-page-09.webp"
+    ],
+    "print": "/tickets/original-4-print.html",
+    "sha256": "fb4720e3a609a3064dced66beed58f0d26d106a9a532e7aba92668de59538634"
+  }
+]

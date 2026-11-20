@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Feuilleter le catalogue ARIMA</title></head>
+<body><main class="reader-shell" id="reader" aria-label="Livre du catalogue ARIMA" tabindex="0">
+  <div class="book-stage"><div id="book-host"></div><div class="book-loading" id="loading" role="status">Votre catalogue s’ouvre…</div></div>
+  <nav class="book-controls" aria-label="Navigation dans le catalogue">
+    <button type="button" id="first" aria-label="Première page" title="Première page" disabled>«</button>
+    <button type="button" id="previous" aria-label="Page précédente" title="Page précédente" disabled>‹</button>
+    <span class="page-counter" id="counter" aria-live="polite">Page 1</span>
+    <button type="button" id="next" aria-label="Page suivante" title="Page suivante" disabled>›</button>
+    <button type="button" id="last" aria-label="Dernière page" title="Dernière page" disabled>»</button>
+  </nav>
+  <p class="reader-error" id="error" role="alert" hidden>Le livre n’a pas pu être chargé. <a href="/catalogue/ARIMA_Catalogue_Final.pdf" target="_blank">Ouvrir le PDF</a></p>
+</main><script type="module" src="/src/catalogueReader.ts"></script></body></html>

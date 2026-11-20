@@ -1,0 +1,159 @@
+[
+  {
+    "title": "Le catalogue ARIMA",
+    "pdf": "/catalogue/versions/v1/ARIMA_Catalogue_Final.pdf",
+    "pageCount": 7,
+    "pageWidth": 595.2755737304688,
+    "pageHeight": 841.8897705078125,
+    "byteSize": 25196294,
+    "sha256": "0966844fe938d9675bac5afee38629df71e7b96c61a2a7d7534e09a9677c5cc0",
+    "pages": [
+      {
+        "number": 1,
+        "label": "Couverture",
+        "src": "/catalogue/versions/v1/page-01.webp",
+        "thumbnail": "/catalogue/versions/v1/thumb-01.webp"
+      },
+      {
+        "number": 2,
+        "label": "Liste des prix",
+        "src": "/catalogue/versions/v1/page-02.webp",
+        "thumbnail": "/catalogue/versions/v1/thumb-02.webp"
+      },
+      {
+        "number": 3,
+        "label": "Cheesecakes : noisette, Oreo chocolat, pistache et citron",
+        "src": "/catalogue/versions/v1/page-03.webp",
+        "thumbnail": "/catalogue/versions/v1/thumb-03.webp"
+      },
+      {
+        "number": 4,
+        "label": "Tiramisus : noisette, framboise, Kinder Bueno et Kids",
+        "src": "/catalogue/versions/v1/page-04.webp",
+        "thumbnail": "/catalogue/versions/v1/thumb-04.webp"
+      },
+      {
+        "number": 5,
+        "label": "Tiramisus : pistache, fraise, classique et citron",
+        "src": "/catalogue/versions/v1/page-05.webp",
+        "thumbnail": "/catalogue/versions/v1/thumb-05.webp"
+      },
+      {
+        "number": 6,
+        "label": "Tiramisus : spéculoos et Raffaello",
+        "src": "/catalogue/versions/v1/page-06.webp",
+        "thumbnail": "/catalogue/versions/v1/thumb-06.webp"
+      },
+      {
+        "number": 7,
+        "label": "Cheesecakes : caramel, Oreo, chocolat et fraise",
+        "src": "/catalogue/versions/v1/page-07.webp",
+        "thumbnail": "/catalogue/versions/v1/thumb-07.webp"
+      }
+    ],
+    "version": 1,
+    "savedAt": "2026-11-19T14:04:49.008190+00:00",
+    "print": "/catalogue/versions/v1/print.html"
+  },
+  {
+    "title": "Le catalogue ARIMA",
+    "pdf": "/catalogue/versions/v2/revision-2/ARIMA_Catalogue_Final.pdf",
+    "pageCount": 14,
+    "pageWidth": 595.2755737304688,
+    "pageHeight": 841.8897705078125,
+    "byteSize": 8154207,
+    "sha256": "664951a5721995e628cff4f71588b901d7a205f1b78bc353497debf5a53f8990",
+    "pages": [
+      {
+        "number": 1,
+        "label": "Couverture - Les petites douceurs de la Maison",
+        "src": "/catalogue/versions/v2/revision-2/page-01.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-01.webp"
+      },
+      {
+        "number": 2,
+        "label": "Notre collection - Cheesecakes, tiramisus et minis",
+        "src": "/catalogue/versions/v2/revision-2/page-02.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-02.webp"
+      },
+      {
+        "number": 3,
+        "label": "CHEESECAKES - Caramel, Oreo, Chocolat",
+        "src": "/catalogue/versions/v2/revision-2/page-03.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-03.webp"
+      },
+      {
+        "number": 4,
+        "label": "CHEESECAKES - Fraise, Citron, Pistache",
+        "src": "/catalogue/versions/v2/revision-2/page-04.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-04.webp"
+      },
+      {
+        "number": 5,
+        "label": "CHEESECAKES - Noisette, Oreo chocolat, Raffaello",
+        "src": "/catalogue/versions/v2/revision-2/page-05.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-05.webp"
+      },
+      {
+        "number": 6,
+        "label": "TIRAMISUS - Classique, Noisette, Spéculoos",
+        "src": "/catalogue/versions/v2/revision-2/page-06.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-06.webp"
+      },
+      {
+        "number": 7,
+        "label": "TIRAMISUS - Fraise, Framboise, Citron",
+        "src": "/catalogue/versions/v2/revision-2/page-07.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-07.webp"
+      },
+      {
+        "number": 8,
+        "label": "TIRAMISUS - Pistache, Raffaello",
+        "src": "/catalogue/versions/v2/revision-2/page-08.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-08.webp"
+      },
+      {
+        "number": 9,
+        "label": "TIRAMISUS - Kinder Bueno, Kids",
+        "src": "/catalogue/versions/v2/revision-2/page-09.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-09.webp"
+      },
+      {
+        "number": 10,
+        "label": "MINI TIRAMISUS - Classique, Noisette, Pistache, Raffaello",
+        "src": "/catalogue/versions/v2/revision-2/page-10.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-10.webp"
+      },
+      {
+        "number": 11,
+        "label": "MINI TIRAMISUS - Fraise, Framboise, Citron",
+        "src": "/catalogue/versions/v2/revision-2/page-11.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-11.webp"
+      },
+      {
+        "number": 12,
+        "label": "MINI TIRAMISUS - Kinder Bueno, Kids, Spéculoos",
+        "src": "/catalogue/versions/v2/revision-2/page-12.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-12.webp"
+      },
+      {
+        "number": 13,
+        "label": "Les prix de la Maison - Tous les tarifs",
+        "src": "/catalogue/versions/v2/revision-2/page-13.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-13.webp"
+      },
+      {
+        "number": 14,
+        "label": "On se garde une douceur ? - Contacts ARIMA",
+        "src": "/catalogue/versions/v2/revision-2/page-14.webp",
+        "thumbnail": "/catalogue/versions/v2/revision-2/thumb-14.webp"
+      }
+    ],
+    "version": 2,
+    "savedAt": "2026-11-19T14:52:14.279848+00:00",
+    "print": "/catalogue/versions/v2/revision-2/print.html",
+    "revision": 2,
+    "firstSavedAt": "2026-11-19T14:36:11.847607+00:00",
+    "previousSha256": "713cd7070ff773c9bd417bc68b98f8e65a0bf5b24279d8034eb59c7ab6f2c808"
+  }
+]

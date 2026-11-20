@@ -1,0 +1,44 @@
+/* ARIMA is always animated, as explicitly requested by its owner. */
+@keyframes atelier-orbit { from { transform:rotate(-21deg); } to { transform:rotate(339deg); } }
+@keyframes atelier-doodle { 0%,100% { transform:translateY(0) rotate(-5deg); } 50% { transform:translateY(-4px) rotate(8deg); } }
+@keyframes atelier-cherry { 0%,82%,100% { transform:rotate(0); } 88% { transform:rotate(-8deg); } 94% { transform:rotate(5deg); } }
+@keyframes atelier-sugar { 0%,100% { opacity:.4; scale:.75; rotate:0deg; } 50% { opacity:1; scale:1.2; rotate:35deg; } }
+@keyframes atelier-header-bloom { 0%,100% { transform:rotate(-12deg) scale(.94); } 50% { transform:rotate(15deg) scale(1.08); } }
+
+.atelier-cursor { position:fixed; top:0; left:0; width:0; height:0; z-index:120; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .18s; }
+.atelier-cursor.is-visible { opacity:1; visibility:visible; }
+.atelier-cursor>span { position:absolute; width:34px; height:34px; top:-17px; left:-17px; border:1px solid var(--cursor-accent,#d2a28a); background:#f5dcc112; border-radius:50%; transition:width .22s,height .22s,top .22s,left .22s,background .22s,border-color .22s; }
+.atelier-cursor>svg { position:absolute; width:17px; height:17px; top:-25px; left:12px; overflow:visible; animation:atelier-sugar 4s ease-in-out infinite; }
+.atelier-cursor.is-over-action>span { width:45px; height:45px; top:-22.5px; left:-22.5px; background:#e9b7a32b; border-color:#c98b77; }
+.cursor-button { translate:var(--magnetic-x,0px) var(--magnetic-y,0px); transition:translate .18s var(--atelier-ease),transform .25s var(--atelier-ease),background .2s,border-color .2s,box-shadow .25s; }
+.pointer-reactive { transition:transform .28s var(--atelier-ease),box-shadow .3s; }
+
+@media screen {
+  .scene-orbit { animation:atelier-orbit 48s linear infinite; }
+  .art-cake { animation-duration:4.8s; }
+  .art-cherry { transform-origin:206px 103px; animation:atelier-cherry 5s ease-in-out infinite; }
+  .atelier-greeting>svg,.intro-kicker>svg { animation:atelier-doodle 4s ease-in-out infinite; }
+  .metric-icon>svg { animation:atelier-doodle 5s ease-in-out infinite; }
+  .metric-card:nth-child(3) .metric-icon>svg { animation-delay:-2s; }
+  .notification-dot,.connection-status>span { animation:atelier-sugar 3.5s ease-in-out infinite; }
+  .mobile-brand { animation:atelier-doodle 7s ease-in-out infinite; }
+  .atelier-page-heading { isolation:isolate; }
+  .atelier-page-heading::after { content:""; position:absolute; right:5%; top:15%; width:75px; height:75px; border:1px dashed #b88e6b50; border-radius:40% 60% 47% 53%; z-index:-1; pointer-events:none; animation:atelier-header-bloom 7s ease-in-out infinite; }
+  .atelier-hero-scene { transform:translate3d(var(--scene-x,0px),var(--scene-y,0px),0); transition:transform .45s cubic-bezier(.22,1,.36,1); }
+  .pointer-reactive { transform:perspective(1000px) rotateX(var(--pointer-rx,0deg)) rotateY(var(--pointer-ry,0deg)); transition:transform .38s cubic-bezier(.22,1,.36,1),box-shadow .3s; }
+  .pointer-reactive.is-pointer-hover { transform:perspective(1000px) rotateX(var(--pointer-rx,0deg)) rotateY(var(--pointer-ry,0deg)) translateY(-3px); }
+  .atelier-hero.is-pointer-hover,.metric-card.is-pointer-hover { background-image:radial-gradient(ellipse at var(--pointer-x,50%) var(--pointer-y,50%),#fffbdf99,transparent 65%); }
+  .product-card.is-pointer-hover .product-visual>img { translate:var(--parallax-x,0px) var(--parallax-y,0px); }
+  .product-visual>img { transition:translate .4s cubic-bezier(.22,1,.36,1); }
+  .cursor-button { translate:var(--magnetic-x,0px) var(--magnetic-y,0px); transition:translate .22s cubic-bezier(.22,1,.36,1),background .2s,transform .25s,box-shadow .25s; }
+}
+
+@media (hover:none), (pointer:coarse) { .atelier-cursor { display:none; } }
+@media print { .atelier-cursor { display:none!important; } .pointer-reactive { transform:none!important; } .cursor-button { translate:none!important; } }
+
+.atelier-cursor { display:none; pointer-events:none; position:fixed; left:0; top:0; width:0; height:0; z-index:100; opacity:0; transition:opacity .2s; }
+.atelier-cursor.is-visible { opacity:1; }
+.atelier-cursor>span { position:absolute; left:-19px; top:-19px; width:38px; height:38px; border:1px solid #c48f7277; border-radius:50%; background:#f7dcb91a; box-shadow:0 0 20px #e9c29618; }
+.atelier-cursor>svg { width:15px; height:15px; position:absolute; left:13px; top:-24px; animation:atelier-sugar 3s ease-in-out infinite; }
+@media(hover:hover) and (pointer:fine) { .atelier-cursor { display:block; } }
+@media print { .atelier-cursor,.atelier-page-heading::after { display:none!important; } .pointer-reactive,.cursor-button,.atelier-hero-scene { transform:none!important; translate:none!important; } }

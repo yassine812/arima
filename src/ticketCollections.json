@@ -1,0 +1,163 @@
+[
+  {
+    "id": "illustrated",
+    "filename": "ARIMA_Tickets_illustrated.pdf",
+    "title": "Tickets illustrés",
+    "group": "rectangles",
+    "description": "10 goûts · 4 tickets par goût. 2 goûts par page, taille conservée.",
+    "pages": 5,
+    "modelCount": 10,
+    "ticketsPerPage": 8,
+    "ticketsPerFlavour": 4,
+    "flavoursPerPage": 2,
+    "dimensions": "88 × 55 mm",
+    "pdf": "/tickets/collections/ARIMA_Tickets_illustrated.pdf?v=47dd7b87d452",
+    "preview": "/tickets/collections/illustrated-preview.webp?v=47dd7b87d452",
+    "pageImages": [
+      "/tickets/collections/illustrated-page-01.webp?v=47dd7b87d452",
+      "/tickets/collections/illustrated-page-02.webp?v=47dd7b87d452",
+      "/tickets/collections/illustrated-page-03.webp?v=47dd7b87d452",
+      "/tickets/collections/illustrated-page-04.webp?v=47dd7b87d452",
+      "/tickets/collections/illustrated-page-05.webp?v=47dd7b87d452"
+    ],
+    "print": "/tickets/collections/illustrated-print.html?v=47dd7b87d452",
+    "tag": "2 GOÛTS PAR PAGE"
+  },
+  {
+    "id": "tiramisu",
+    "filename": "ARIMA_Tickets_tiramisu.pdf",
+    "title": "Bandelettes tiramisu",
+    "group": "tiramisu",
+    "description": "9 goûts · 4 tickets par goût. 1 goût par page : les bandelettes occupent toute la hauteur.",
+    "pages": 9,
+    "modelCount": 9,
+    "ticketsPerPage": 4,
+    "ticketsPerFlavour": 4,
+    "flavoursPerPage": 1,
+    "dimensions": "Dimensions d’origine",
+    "pdf": "/tickets/collections/ARIMA_Tickets_tiramisu.pdf?v=cf6c8de94ac1",
+    "preview": "/tickets/collections/tiramisu-preview.webp?v=cf6c8de94ac1",
+    "pageImages": [
+      "/tickets/collections/tiramisu-page-01.webp?v=cf6c8de94ac1",
+      "/tickets/collections/tiramisu-page-02.webp?v=cf6c8de94ac1",
+      "/tickets/collections/tiramisu-page-03.webp?v=cf6c8de94ac1",
+      "/tickets/collections/tiramisu-page-04.webp?v=cf6c8de94ac1",
+      "/tickets/collections/tiramisu-page-05.webp?v=cf6c8de94ac1",
+      "/tickets/collections/tiramisu-page-06.webp?v=cf6c8de94ac1",
+      "/tickets/collections/tiramisu-page-07.webp?v=cf6c8de94ac1",
+      "/tickets/collections/tiramisu-page-08.webp?v=cf6c8de94ac1",
+      "/tickets/collections/tiramisu-page-09.webp?v=cf6c8de94ac1"
+    ],
+    "print": "/tickets/collections/tiramisu-print.html?v=cf6c8de94ac1",
+    "tag": "4 TICKETS PAR GOÛT"
+  },
+  {
+    "id": "mini-tiramisu",
+    "filename": "ARIMA_Mini_Tiramisus_Collection_Couleurs.pdf",
+    "title": "Mini tiramisus",
+    "group": "mini",
+    "description": "10 saveurs, 10 illustrations gourmandes et palettes distinctes. 4 tickets par goût, 2 goûts par page.",
+    "pages": 5,
+    "modelCount": 10,
+    "ticketsPerPage": 8,
+    "ticketsPerFlavour": 4,
+    "flavoursPerPage": 2,
+    "dimensions": "44 × 27,5 mm",
+    "pdf": "/tickets/collections/ARIMA_Mini_Tiramisus_Collection_Couleurs.pdf?v=3435fc92658d",
+    "preview": "/tickets/mini-design-v3/label-pistache.webp?v=3435fc92658d",
+    "pageImages": [
+      "/tickets/collections/mini-new-design-page-01.webp?v=3435fc92658d",
+      "/tickets/collections/mini-new-design-page-02.webp?v=3435fc92658d",
+      "/tickets/collections/mini-new-design-page-03.webp?v=3435fc92658d",
+      "/tickets/collections/mini-new-design-page-04.webp?v=3435fc92658d",
+      "/tickets/collections/mini-new-design-page-05.webp?v=3435fc92658d"
+    ],
+    "print": "/tickets/collections/mini-colour-collection-print.html?v=3435fc92658d",
+    "tag": "10 UNIVERS GOURMANDS",
+    "designRevision": 3,
+    "flavours": [
+      "Classique",
+      "Noisette",
+      "Pistache",
+      "Fraise",
+      "Citron",
+      "Framboise",
+      "Kinder Bueno",
+      "Kids",
+      "Spéculoos",
+      "Raffaello"
+    ],
+    "designs": [
+      {
+        "id": "classique",
+        "name": "Classique",
+        "preview": "/tickets/mini-design-v3/label-classique.webp?v=3435fc92658d",
+        "color": "#1B263B",
+        "ink": "#FFF5DA"
+      },
+      {
+        "id": "noisette",
+        "name": "Noisette",
+        "preview": "/tickets/mini-design-v3/label-noisette.webp?v=3435fc92658d",
+        "color": "#075B61",
+        "ink": "#FFF6DA"
+      },
+      {
+        "id": "pistache",
+        "name": "Pistache",
+        "preview": "/tickets/mini-design-v3/label-pistache.webp?v=3435fc92658d",
+        "color": "#24583C",
+        "ink": "#FFF9DA"
+      },
+      {
+        "id": "fraise",
+        "name": "Fraise",
+        "preview": "/tickets/mini-design-v3/label-fraise.webp?v=3435fc92658d",
+        "color": "#AE2345",
+        "ink": "#FFF8DC"
+      },
+      {
+        "id": "citron",
+        "name": "Citron",
+        "preview": "/tickets/mini-design-v3/label-citron.webp?v=3435fc92658d",
+        "color": "#F3D03C",
+        "ink": "#243C58"
+      },
+      {
+        "id": "framboise",
+        "name": "Framboise",
+        "preview": "/tickets/mini-design-v3/label-framboise.webp?v=3435fc92658d",
+        "color": "#76234E",
+        "ink": "#FFF2DD"
+      },
+      {
+        "id": "kinder",
+        "name": "Kinder Bueno",
+        "preview": "/tickets/mini-design-v3/label-kinder.webp?v=3435fc92658d",
+        "color": "#702939",
+        "ink": "#FFF2DC"
+      },
+      {
+        "id": "kids",
+        "name": "Kids",
+        "preview": "/tickets/mini-design-v3/label-kids.webp?v=3435fc92658d",
+        "color": "#3153BA",
+        "ink": "#FFF5D7"
+      },
+      {
+        "id": "speculos",
+        "name": "Spéculoos",
+        "preview": "/tickets/mini-design-v3/label-speculos.webp?v=3435fc92658d",
+        "color": "#A54824",
+        "ink": "#FFF4D8"
+      },
+      {
+        "id": "rafaello",
+        "name": "Raffaello",
+        "preview": "/tickets/mini-design-v3/label-rafaello.webp?v=3435fc92658d",
+        "color": "#087D88",
+        "ink": "#FFFAE5"
+      }
+    ]
+  }
+]

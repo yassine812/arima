@@ -1,0 +1,72 @@
+{
+  "classique": {
+    "id": "classique",
+    "name": "Classique",
+    "panel": "#1B263B",
+    "ink": "#FFF5DA",
+    "file": "classique.png"
+  },
+  "noisette": {
+    "id": "noisette",
+    "name": "Noisette",
+    "panel": "#075B61",
+    "ink": "#FFF6DA",
+    "file": "noisette.png"
+  },
+  "pistache": {
+    "id": "pistache",
+    "name": "Pistache",
+    "panel": "#24583C",
+    "ink": "#FFF9DA",
+    "file": "pistache.png"
+  },
+  "fraise": {
+    "id": "fraise",
+    "name": "Fraise",
+    "panel": "#AE2345",
+    "ink": "#FFF8DC",
+    "file": "fraise.png"
+  },
+  "citron": {
+    "id": "citron",
+    "name": "Citron",
+    "panel": "#F3D03C",
+    "ink": "#243C58",
+    "file": "citron.png"
+  },
+  "framboise": {
+    "id": "framboise",
+    "name": "Framboise",
+    "panel": "#76234E",
+    "ink": "#FFF2DD",
+    "file": "framboise.png"
+  },
+  "kinder": {
+    "id": "kinder",
+    "name": "Kinder Bueno",
+    "panel": "#702939",
+    "ink": "#FFF2DC",
+    "file": "kinder.png"
+  },
+  "kids": {
+    "id": "kids",
+    "name": "Kids",
+    "panel": "#3153BA",
+    "ink": "#FFF5D7",
+    "file": "kids.png"
+  },
+  "speculos": {
+    "id": "speculos",
+    "name": "Spéculoos",
+    "panel": "#A54824",
+    "ink": "#FFF4D8",
+    "file": "speculos.png"
+  },
+  "rafaello": {
+    "id": "rafaello",
+    "name": "Raffaello",
+    "panel": "#087D88",
+    "ink": "#FFFAE5",
+    "file": "rafaello.png"
+  }
+}

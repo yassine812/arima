@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400,60,1;0,9..144,500,60,1;0,9..144,600,60,1;1,9..144,400,60,1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@import "./brand.css";
+@import "./buttons.css";
+@import "./illustrations.css";
+@import "./atelier.css";
+@import "./cursor-motion.css";
+@import "./dessert-effects.css";
+@import "./cafe-prices.css";
+@import "./catalogue-book.css";
+@import "./brand-identity.css";
+@import "./tickets.css";
+@import "./cafe-portal.css";
+@import "./profile-menu.css";
+@import "./cafe-cinema.css";
+
+@theme {
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer utilities {
+  /* High quality print styling to support professional A4 printouts */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 0 !important; /* Removes browser default headers (Google AI Studio) & footers (URL links) */
+    }
+    
+    /* Hide everything on the page */
+    body * {
+      visibility: hidden !important;
+    }
+    
+    /* Show only the invoice print container and its contents */
+    .print-card, .print-card * {
+      visibility: visible !important;
+    }
+    
+    /* Reposition and re-style the printed card to occupy the whole physical page */
+    .print-card {
+      position: absolute !important;
+      left: 15mm !important;
+      top: 15mm !important;
+      right: 15mm !important;
+      width: calc(100% - 30mm) !important;
+      max-width: calc(100% - 30mm) !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: white !important;
+      color: black !important;
+    }
+
+    body {
+      background: white !important;
+      color: black !important;
+      width: 100% !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    
+    /* Reset layout wrapper constraints that might clip the printed content */
+    #root, html, main, div {
+      overflow: visible !important;
+      height: auto !important;
+      min-height: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    .no-print {
+      display: none !important;
+    }
+    .main-workspace { margin-left:0 !important; }
+    .workspace-content { max-width:none !important; padding:0 !important; }
+    .print-card .brand-logo { position:relative !important; width:155px !important; height:90px !important; overflow:hidden !important; }
+    .print-card .brand-logo img { position:absolute !important; width:250% !important; height:auto !important; max-width:none !important; }
+  }
+}

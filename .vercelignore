@@ -1,0 +1,13 @@
+.git
+node_modules
+.npm-cache
+.env*
+!.env.example
+data
+data-arima-db.json
+backups
+output
+tmp
+*.log
+tests
+scripts/__pycache__

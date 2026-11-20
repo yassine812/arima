@@ -1,0 +1,18 @@
+.product-visual.is-illustrated { aspect-ratio:1; isolation:isolate; background:#f3e6d0; }
+.product-visual.is-illustrated>img { object-fit:contain; object-position:center; transform-origin:center; }
+.product-visual.is-illustrated .product-category { background:#fffaf0ed; border-color:#fff7; color:#786044; backdrop-filter:blur(6px); z-index:2; }
+.product-visual.is-illustrated .product-edit { z-index:2; }
+.flavour-motion { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:1; }
+.flavour-motion i { position:absolute; width:5px; height:5px; border-radius:50%; background:var(--flavour-accent); box-shadow:0 0 8px #fff8; opacity:.45; }
+.flavour-motion i:nth-child(1) { top:16%; left:8%; }
+.flavour-motion i:nth-child(2) { top:72%; right:8%; width:7px; height:7px; }
+.flavour-motion i:nth-child(3) { top:35%; right:14%; width:3px; height:3px; }
+@media screen {
+  .product-visual.is-illustrated.is-visible>img { animation:illustration-breathe 9s ease-in-out infinite alternate; }
+  .product-visual.is-visible .flavour-motion i { animation:flavour-drift 6s ease-in-out infinite alternate; }
+  .product-visual.is-visible .flavour-motion i:nth-child(2) { animation-delay:-2s; }
+  .product-visual.is-visible .flavour-motion i:nth-child(3) { animation-delay:-4s; }
+  @keyframes illustration-breathe { from { transform:scale(1.005) translateY(0); } to { transform:scale(1.035) translateY(-2px); } }
+  @keyframes flavour-drift { from { transform:translateY(7px) scale(.7); opacity:.15; } to { transform:translateY(-12px) scale(1.2); opacity:.65; } }
+}
+@media(prefers-reduced-motion:reduce) { html:not([data-atelier-motion="always"]) :is(.product-visual.is-illustrated>img,.flavour-motion i) { animation:none!important; transform:none!important; } }

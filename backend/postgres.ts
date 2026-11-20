@@ -1,7 +1,7 @@
 import postgres from 'postgres';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { hashPassword, type Account, type Collections } from './database';
-import products from './seed-products.json';
+import { hashPassword, type Account, type Collections } from './database.js';
+import products from './seed-products.json' with { type: 'json' };
 
 const tables = ['products', 'cafes', 'invoices', 'orders', 'notifications'] as const;
 type Query = (text: string, params?: any[]) => Promise<any[]>;

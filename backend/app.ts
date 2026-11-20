@@ -1,7 +1,7 @@
 import express from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import { randomBytes, randomUUID } from 'node:crypto';
-import { Store, checkPassword, hashPassword, tokenHash } from './database';
+import { Store, checkPassword, hashPassword, tokenHash } from './database.js';
 import type { PostgresStore } from './postgres';
 import type { Product, Cafe, Invoice, InvoiceItem, Order, OrderStatus } from '../src/types';
 class ApiError extends Error {

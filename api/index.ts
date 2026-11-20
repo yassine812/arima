@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { createApp } from '../backend/app';
-import { PostgresStore } from '../backend/postgres';
+import { createApp } from '../backend/app.js';
+import { PostgresStore } from '../backend/postgres.js';
 
 let application: Promise<ReturnType<typeof createApp>> | undefined;
 async function initialize() {

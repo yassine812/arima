@@ -1,6 +1,5 @@
-import React from "react";
-import { ArrowLeft, Printer, Download, Check, Clock, ShieldAlert, Award, FileText } from "lucide-react";
-import { Invoice } from "../types";
+import { ArrowLeft, Printer, Check, Heart, Sparkles, MapPin, Phone, CakeSlice } from 'lucide-react';
+import type { Invoice } from '../types';
 import BrandLogo from './BrandLogo';
 
 interface InvoiceDetailPrintViewProps {
@@ -8,179 +7,36 @@ interface InvoiceDetailPrintViewProps {
   onBack: () => void;
   onMarkAsPaid?: (id: string) => Promise<void>;
 }
+const formatDT = (value: number) => `${value.toLocaleString('fr-TN', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} DT`;
+const statuses = { paid: 'Réglée, merci !', unpaid: 'À régler', draft: 'Brouillon' };
 
-export default function InvoiceDetailPrintView({
-  invoice,
-  onBack,
-  onMarkAsPaid,
-}: InvoiceDetailPrintViewProps) {
-  
-  // Detect if running inside the preview iframe, where browsers limit/block window.print()
-  const isInsideIframe = typeof window !== "undefined" && window.self !== window.top;
-
-  // Launch standard print dialog
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const formatDT = (val: number) => {
-    if (val === undefined || val === null) return "0,000 DT";
-    return val.toLocaleString("fr-TN", {
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
-    }) + " DT";
-  };
-
-  const isBakeryKgItem = (name: string) => {
-    const n = name.toLowerCase();
-    return n.includes("kg") || n.includes("baklawa") || n.includes("kaak") || n.includes("samsa");
-  };
-
-  return (
-    <div className="invoice-detail-page space-y-6 font-sans">
-      {/* Upper bar with non-printable action headers */}
-      <div className="invoice-detail-toolbar no-print bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 p-4 shadow-lg shadow-amber-950/2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <button
-            aria-label="Retour" onClick={onBack}
-            className="p-2 hover:bg-stone-100 rounded-xl border border-stone-200 text-stone-600 transition-all cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <h1 className="font-serif text-sm font-semibold text-stone-900">Facture {invoice.invoiceNumber}</h1>
-            <p className="text-[11px] text-stone-400">Générez une impression papier A4 ou exportez directement en PDF.</p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {invoice.status !== "paid" && onMarkAsPaid && (
-            <button
-              onClick={() => onMarkAsPaid(invoice.id)}
-              className="flex items-center gap-1 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-lg text-xs font-bold transition-all cursor-pointer"
-            >
-              <Check className="w-3.5 h-3.5" />
-              <span>Marquer comme Payée</span>
-            </button>
-          )}
-
-          <button
-            onClick={handlePrint}
-            className="btn-primary flex items-center gap-1.5 px-4 py-2 bg-amber-800 hover:bg-amber-900 text-white rounded-lg text-xs font-bold transition-all cursor-pointer shadow-sm hover:shadow active:scale-95 duration-100"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Imprimer / PDF (A4)</span>
-          </button>
-        </div>
-      </div>
-
-      {/* PDF Export instruction alert */}
-      {isInsideIframe && (
-        <div className="no-print bg-amber-50/70 border-2 border-amber-500/30 rounded-xl p-4 text-xs text-amber-950 flex items-start gap-2.5 animate-pulse">
-          <ShieldAlert className="w-5 h-5 text-amber-800 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-bold block text-sm mb-1">Avis important pour le mode Aperçu :</span>
-            Vous naviguez actuellement à l'intérieur de l'aperçu sécurisé de l'éditeur (Iframe). Les fonctions d'impression du navigateur et de téléchargement PDF peuvent être restreintes par les protections de votre navigateur.
-            <div className="mt-2 text-stone-900 font-medium">
-              👉 Pour imprimer ou exporter votre facture sans contrainte, veuillez cliquer sur l'icône <span className="font-bold">"Ouvrir dans un nouvel onglet"</span> en haut à droite de l'aperçu de l'application (ou utiliser le lien direct de votre projet).
-            </div>
-          </div>
-        </div>
-      )}
-
-      <details className="mobile-print-help no-print"><summary>Enregistrer la facture en PDF</summary><p>Appuyez sur « Imprimer / PDF », puis choisissez « Enregistrer en PDF » ou l’option de partage de votre téléphone. Le document conserve son format A4.</p></details>
-      <div className="desktop-print-help no-print bg-stone-50 border border-stone-200 rounded-xl p-3.5 text-xs text-stone-700 flex items-start gap-2.5">
-        <FileText className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
-        <div>
-          <span className="font-bold">Configuration :</span> Lors de l'ouverture de l'imprimante, choisissez l'imprimante virtuelle <span className="font-semibold text-stone-950">"Enregistrer au format PDF"</span> (ou <span className="font-semibold text-stone-950">"Save as PDF"</span>). Nous avons configuré une règle CSS pour masquer automatiquement les en-têtes (Google AI Studio) et les pieds de page (liens). Si certains s'affichent encore, veillez à décocher la case <span className="font-semibold text-stone-950">"En-têtes et pieds de page"</span> (Headers and footers) dans les options de votre imprimante ou navigateur.
-        </div>
-      </div>
-
-      {/* Printable Invoice Page Container (Matches standard elegant enterprise letterhead) */}
-      <div className="print-card bg-white rounded-3xl border border-stone-200 p-8 sm:p-12 shadow-md max-w-4xl mx-auto text-stone-800 relative select-text">
-        
-        {/* Invoice Header (Logo, Date, Café name) */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-stone-250 pb-6 gap-4">
-          {/* Arima Logo (optional) */}
-          <BrandLogo className="invoice-brand" />
-
-          {/* Date & Café Name */}
-          <div className="text-left sm:text-right space-y-1 font-sans text-xs">
-            <div>
-              <span className="text-stone-400 font-medium">Date :</span>{" "}
-              <span className="font-bold text-stone-900 font-mono">
-                {new Date(invoice.date).toLocaleDateString("fr-FR")}
-              </span>
-            </div>
-            <div>
-              <span className="text-stone-400 font-medium">Café :</span>{" "}
-              <span className="font-bold text-stone-900">
-                {invoice.cafeName || invoice.customerName}
-              </span>
-            </div>
-            <div className="text-[10px] text-stone-400 font-mono">
-              Facture N°: {invoice.invoiceNumber}
-            </div>
-          </div>
-        </div>
-
-        {/* Product table */}
-        <div className="py-6">
-          <table className="invoice-items-table w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="border-b border-stone-300 text-[10px] font-bold text-stone-605 uppercase tracking-wider">
-                <th className="py-2 pb-3">Produit</th>
-                <th className="py-2 pb-3 text-center w-24">Quantité</th>
-                <th className="py-2 pb-3 text-right w-36">Prix unitaire</th>
-                <th className="py-2 pb-3 text-right w-36">Total</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-100">
-              {invoice.items?.map((item, idx) => {
-                const itemBrut = item.price * item.quantity;
-                return (
-                  <tr key={idx} className="hover:bg-stone-50/40">
-                    <td data-label="Produit" className="py-3 font-semibold text-stone-850">
-                      {item.name}
-                    </td>
-                    <td data-label="Quantité" className="py-3 text-center font-mono font-medium text-stone-800">
-                      {item.quantity}
-                    </td>
-                    <td data-label="Prix unitaire" className="py-3 text-right font-mono text-stone-600">
-                      {formatDT(item.price)}
-                    </td>
-                    <td data-label="Total" className="py-3 text-right font-mono font-bold text-stone-900">
-                      {formatDT(itemBrut)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Totals Section */}
-        <div className="flex flex-col items-end pt-4 border-t border-stone-200">
-          <div className="w-full sm:w-80 space-y-3 font-sans text-xs">
-            {/* Total quantity of products */}
-            <div className="flex justify-between items-center text-stone-600">
-              <span className="font-medium">Quantité totale de produits :</span>
-              <span className="font-mono font-black text-sm text-stone-800">
-                {invoice.items?.reduce((sum, item) => sum + item.quantity, 0) || 0}
-              </span>
-            </div>
-
-            {/* Grand total in DT */}
-            <div className="flex justify-between items-center bg-amber-50/50 p-3 rounded-xl border border-amber-100">
-              <span className="font-bold text-amber-900">Total Général (DT) :</span>
-              <span className="font-serif text-lg font-extrabold text-amber-950 font-mono">
-                {formatDT(invoice.items?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0)}
-              </span>
-            </div>
-          </div>
-        </div>
-
-      </div>
+export default function InvoiceDetailPrintView({ invoice, onBack, onMarkAsPaid }: InvoiceDetailPrintViewProps) {
+  const date = new Date(`${invoice.date.slice(0, 10)}T12:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const quantity = invoice.items.reduce((sum, item) => sum + item.quantity, 0);
+  return <div className="invoice-detail-page invoice-stationery">
+    <div className="invoice-detail-toolbar invoice-screen-tools no-print">
+      <div className="invoice-screen-title"><button type="button" className="icon-button" aria-label="Retour" onClick={onBack}><ArrowLeft size={19} /></button><div><span className="section-eyebrow">LES PAPIERS DE LA MAISON</span><h1>Votre facture.</h1></div></div>
+      <div className="invoice-screen-actions">{invoice.status !== 'paid' && onMarkAsPaid && <button type="button" className="btn-secondary" onClick={() => onMarkAsPaid(invoice.id)}><Check size={17} />Marquer comme payée</button>}<button type="button" className="btn-primary" onClick={() => window.print()}><Printer size={17} />Imprimer / PDF</button></div>
     </div>
-  );
+    <article className="print-card invoice-paper" aria-label={`Facture ${invoice.invoiceNumber}`}>
+      <header className="invoice-letterhead">
+        <div className="invoice-brand-block"><BrandLogo className="invoice-brand" /><span>LES DOUCEURS QUI NOUS RASSEMBLENT</span></div>
+        <div className="invoice-heading-block"><span className="invoice-kicker">LE CARNET DE VOTRE CAFÉ</span><h2>Facture<span aria-hidden="true">.</span></h2><strong>{invoice.invoiceNumber}</strong><span className={`invoice-payment-status is-${invoice.status}`}>{invoice.status === 'paid' ? <Check size={13} /> : <span className="invoice-status-dot" />}{statuses[invoice.status]}</span></div>
+      </header>
+      <section className="invoice-greeting" aria-label="La touche ARIMA"><div><span className="invoice-kicker">PRÉPARÉ AVEC SOIN, PARTAGÉ AVEC VOUS</span><p>Une livraison de <em>petits bonheurs.</em></p></div><div className="invoice-dessert-duo" aria-hidden="true"><Sparkles className="invoice-doodle-spark" size={21} /><img src="/brand/motion/tiramisu.svg" alt="" /><img src="/brand/motion/cheesecake.svg" alt="" /><Heart className="invoice-doodle-heart" size={18} /></div></section>
+      <section className="invoice-parties" aria-label="Informations de facturation">
+        <div className="invoice-recipient"><span className="invoice-kicker">POUR NOTRE PARTENAIRE</span><h3>{invoice.cafeName || invoice.customerName}</h3>{invoice.cafeName && invoice.customerName !== invoice.cafeName && <p>{invoice.customerName}</p>}{invoice.customerPhone && <p><Phone size={13} />{invoice.customerPhone}</p>}{invoice.customerAddress && <p><MapPin size={13} /><span>{invoice.customerAddress}</span></p>}</div>
+        <dl className="invoice-facts"><div><dt>Date d’émission</dt><dd>{date}</dd></div><div><dt>Votre sélection</dt><dd>{invoice.items.length} création{invoice.items.length > 1 ? 's' : ''} <span>· {quantity.toLocaleString('fr-TN')} unité{quantity > 1 ? 's' : ''}</span></dd></div><div><dt>Devise</dt><dd>Dinar tunisien <span>· DT</span></dd></div></dl>
+      </section>
+      <section className="invoice-selection" aria-label="Détail des produits"><div className="invoice-section-label"><CakeSlice size={16} /><span>LES DOUCEURS DE VOTRE SÉLECTION</span><span className="invoice-section-rule" /></div>
+        <table className="invoice-items-table"><thead><tr><th scope="col">Création</th><th scope="col">Quantité</th><th scope="col">Prix unitaire</th><th scope="col">Total</th></tr></thead><tbody>{invoice.items.map((item, index) => <tr key={`${item.productId}-${index}`}><td data-label="Produit"><span className="invoice-item-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><span>{item.name}</span></td><td data-label="Quantité">{item.quantity.toLocaleString('fr-TN')}</td><td data-label="Prix unitaire">{formatDT(item.price)}</td><td data-label="Total">{formatDT(Math.round(item.price * item.quantity * 1000) / 1000)}</td></tr>)}</tbody></table>
+      </section>
+      <div className="invoice-closing">
+        <aside className="invoice-thank-you"><div className="invoice-thanks-seal" aria-hidden="true"><Heart size={22} /><span>LA TOUCHE ARIMA</span></div><p>Merci de faire partie<br />de <em>notre histoire.</em></p><span>Un peu de douceur,<br />beaucoup de soin.</span></aside>
+        <section className="invoice-totals" aria-label="Montants de la facture"><div><span>Sous-total{invoice.taxEnabled ? ' HT' : ''}</span><strong>{formatDT(invoice.subtotal)}</strong></div>{invoice.taxEnabled && <div><span>TVA · {invoice.taxRate.toLocaleString('fr-TN')} %</span><strong>{formatDT(invoice.taxAmount)}</strong></div>}<div className="invoice-grand-total"><span>Total {invoice.taxEnabled ? 'TTC' : 'de la facture'}<small>DINAR TUNISIEN</small></span><strong>{formatDT(invoice.total)}</strong></div><p>{invoice.status === 'paid' ? <><Check size={13} />Cette facture a été réglée. Merci pour votre confiance.</> : invoice.status === 'draft' ? 'Document provisoire · facture en cours de préparation.' : 'Merci pour votre confiance et votre fidélité.'}</p></section>
+      </div>
+      <footer className="invoice-paper-footer"><span>MAISON ARIMA <i>·</i> Tiramisu & Cheesecake</span><span>Fait avec <Heart size={11} fill="currentColor" /> en Tunisie</span></footer>
+    </article>
+    <details className="invoice-export-help no-print"><summary><Printer size={15} />Imprimer ou enregistrer un PDF</summary><p>Choisissez le format A4, puis « Enregistrer en PDF » ou votre imprimante. Activez les arrière-plans pour retrouver les couleurs de la maison et désactivez les en-têtes et pieds de page du navigateur.</p></details>
+  </div>;
 }

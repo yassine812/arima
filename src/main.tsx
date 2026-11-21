@@ -4,6 +4,7 @@ import App from './App.tsx';
 import AtelierExperience from './components/AtelierExperience';
 import './index.css';
 import './mobile.css';
+import './invoice-stationery.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

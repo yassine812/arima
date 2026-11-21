@@ -149,3 +149,10 @@ TypeScript excludes generated `dist`, `output` and ignored `tmp` maintenance fil
 The catalogue loads its cover before the remaining high-resolution pages and preloads upcoming spreads. Portrait phones show one centred page; resizing or rotating switches to the appropriate book layout. Catalogue, ticket and video dialogs fit the available screen.
 
 Validated in browser viewports at 320, 360, 390 and 430 px, 667 × 375 and 844 × 390 landscape, 768 px tablet and 1280 px desktop. Administrator and café flows were exercised against a separate disposable local database, including invoice editing/preview, partner prices, a submitted café order, catalogue navigation/rotation, tickets, video opening and logout. No production records were created or changed during these checks. These are browser viewport checks, not physical iOS/Android device certification. `npm run lint`, `npm test` (14 passing tests) and `npm run build` validate the release.
+
+
+### ARIMA invoice stationery — 21 November 2026
+
+Invoices now share the site's vanilla, rose and pistachio identity: a brand letterhead, illustrated dessert ribbon, partner details, numbered product lines, payment badge, a thank-you seal and a highlighted total. Mobile keeps readable product cards; print uses a still A4 layout with repeating table headers and unsplit rows/totals. The browser's print command remains available to both roles.
+
+The document now displays the recorded subtotal, optional TVA and recorded invoice total. Previously the preview presented the sum of item prices as its grand total, omitting enabled TVA. Two document-render tests cover taxable and untaxed invoices and read-only café actions. No stored invoice, tariff or account is modified. Typecheck, production build and all 16 tests pass. Visual checks cover 320/390/430 px phones, desktop and an A4-size local proof using the compiled print styles; native printer output was not available in the in-app browser.

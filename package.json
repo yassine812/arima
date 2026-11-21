@@ -13,7 +13,7 @@
     "start": "node dist/server.cjs",
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "lint": "tsc --noEmit",
-    "test": "node --import tsx --test tests/backend.test.ts tests/cafe-overview.test.ts tests/postgres.test.ts",
+    "test": "node --import tsx --test tests/backend.test.ts tests/cafe-overview.test.ts tests/postgres.test.ts tests/invoice-document.test.ts",
     "db:migrate-production": "tsx scripts/migrate-production.ts",
     "catalog:add-minis": "tsx scripts/add-mini-tiramisus.ts"
   },

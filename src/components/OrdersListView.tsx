@@ -126,7 +126,7 @@ export default function OrdersListView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="orders-page space-y-6">
       {/* Header section */}
       <AtelierHero kind="pistache" eyebrow="DU BONHEUR EN PRÉPARATION" title={<>Les prochaines <em>douceurs.</em></>} description={isCafe ? 'Vos gourmandises préférées, de notre atelier à votre café.' : 'Un peu de soin à chaque étape. Suivez les commandes, de l’atelier à la livraison.'}>
         <button
@@ -224,10 +224,10 @@ export default function OrdersListView({
             return (
               <div
                 key={o.id}
-                className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 p-5 shadow-sm hover:bg-white/80 transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+                className="order-card bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 p-5 shadow-sm hover:bg-white/80 transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
               >
                 {/* Details left side */}
-                <div className="space-y-2.5 flex-1 min-w-0 pr-4">
+                <div className="order-card-details space-y-2.5 flex-1 min-w-0 pr-4">
                   <div className="flex flex-wrap items-center gap-2.5">
                     <span className="font-mono text-xs font-bold text-stone-900">{o.orderNumber}</span>
                     <span className={`text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded border ${badg.bg}`}>
@@ -255,7 +255,7 @@ export default function OrdersListView({
                 </div>
 
                 {/* Actions right side controls */}
-                <div className="flex flex-wrap items-center gap-3 shrink-0 self-end md:self-center">
+                <div className="order-card-actions flex flex-wrap items-center gap-3 shrink-0 self-end md:self-center">
                   
                   {/* Café user cancellation action (only if En attente) */}
                   {isCafe && o.status === "En attente" && (

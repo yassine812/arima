@@ -141,3 +141,11 @@ Two complete animated edits extend the showcase to five films: `en-famille` (2:1
 The new films use full 720p MP4 web encodes, silent 360p seven-second previews and portrait posters. Only the visible active preview plays. A six-column desktop grid centres the last two frames; the featured new film appears first on mobile. Music attribution is available through the showcase footer. No backend records or account permissions are changed. The editable 1080p masters and detailed provenance remain in the local video workspace under `output/arima_pair_1548_20261120/`.
 
 TypeScript excludes generated `dist`, `output` and ignored `tmp` maintenance files; application, backend, scripts and tests remain checked.
+
+### Mobile website — 21 November 2026
+
+`src/mobile.css` adapts both roles for phones: safe-area-aware bottom navigation, a scrollable full menu, compact illustrated headers, two-column products, readable invoice cards, larger form fields and touch controls. The order builder puts products before its summary and keeps a basket shortcut above the navigation. Touch devices retain the soft brand and ingredient motion without desktop pointer effects. Screen-only rules preserve invoice A4 printing and the physical dimensions of ticket PDFs.
+
+The catalogue loads its cover before the remaining high-resolution pages and preloads upcoming spreads. Portrait phones show one centred page; resizing or rotating switches to the appropriate book layout. Catalogue, ticket and video dialogs fit the available screen.
+
+Validated in browser viewports at 320, 360, 390 and 430 px, 667 × 375 and 844 × 390 landscape, 768 px tablet and 1280 px desktop. Administrator and café flows were exercised against a separate disposable local database, including invoice editing/preview, partner prices, a submitted café order, catalogue navigation/rotation, tickets, video opening and logout. No production records were created or changed during these checks. These are browser viewport checks, not physical iOS/Android device certification. `npm run lint`, `npm test` (14 passing tests) and `npm run build` validate the release.

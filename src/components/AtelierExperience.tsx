@@ -37,7 +37,7 @@ export default function AtelierExperience({ children }: { children: ReactNode })
     let visible = false;
     const particles = new Map<HTMLElement, ReturnType<typeof setTimeout>>();
     const burst = (event: MouseEvent) => {
-      if (event.button !== 0 || !bursts.current) return;
+      if (event.button !== 0 || !bursts.current || !finePointer.matches || window.innerWidth < 768) return;
       const bounds = event.target instanceof Element ? event.target.getBoundingClientRect() : null;
       const x = event.detail === 0 && bounds ? bounds.left + bounds.width / 2 : event.clientX;
       const y = event.detail === 0 && bounds ? bounds.top + bounds.height / 2 : event.clientY;
@@ -119,7 +119,7 @@ export default function AtelierExperience({ children }: { children: ReactNode })
       resetCard(); resetButton();
     };
     const move = (event: PointerEvent) => {
-      if (event.pointerType === 'touch' || !finePointer.matches) { hide(); return; }
+      if (event.pointerType === 'touch' || !finePointer.matches || window.innerWidth < 768) { hide(); return; }
       target = event.target instanceof Element ? event.target : null;
       targetX = event.clientX; targetY = event.clientY;
       visible = true;

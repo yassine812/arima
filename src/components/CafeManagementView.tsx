@@ -106,7 +106,7 @@ export default function CafeManagementView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="cafe-management-page space-y-6">
       {/* Header section */}
       <AtelierHero kind="rose" eyebrow="LES AMIS DE LA MAISON" title={<>De belles <em>rencontres.</em></>} description="Nos cafés partenaires, leurs petites habitudes et leurs tarifs. Une relation qui se cultive avec soin.">
         {!editingCafe && (
@@ -375,7 +375,7 @@ export default function CafeManagementView({
                 return (
                   <div
                     key={p.id}
-                    className={`p-4 rounded-xl border transition-all flex items-center justify-between gap-4 ${
+                    className={`cafe-price-row p-4 rounded-xl border transition-all flex items-center justify-between gap-4 ${
                       isCustom
                         ? "bg-amber-50/20 border-amber-200"
                         : "bg-white border-stone-200/60"

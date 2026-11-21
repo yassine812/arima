@@ -33,3 +33,12 @@ button:focus-visible,a:focus-visible{outline:3px solid #efd0ae;outline-offset:4p
 }
 @media(max-height:480px){.book-stage{top:62px;bottom:66px}.book-controls{bottom:13px}}
 @media(hover:hover) and (pointer:fine){html,html *{cursor:url('/brand/motion/tiramisu-arrow.svg') 2 2,auto}}
+@media(max-width:767px){
+ .book-stage{inset:calc(76px + env(safe-area-inset-top)) 12px calc(82px + env(safe-area-inset-bottom))}
+ #book-host{width:100%;max-width:100%}
+ .book-controls{left:12px;right:12px;bottom:calc(16px + env(safe-area-inset-bottom));transform:none;gap:4px;justify-content:center}
+ .book-controls button{width:44px;height:44px;min-width:44px;font-size:25px;touch-action:manipulation}
+ .page-counter{min-width:80px;max-width:140px;flex:1;height:40px;font-size:11px;padding:0 7px}
+}
+@media(max-height:480px){.book-stage{top:58px;bottom:58px}.book-controls{bottom:8px}.book-controls button{height:44px;width:44px}}
+@media(max-height:360px){.book-stage{top:54px;bottom:50px}.book-controls{bottom:4px}}

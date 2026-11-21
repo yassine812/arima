@@ -155,11 +155,11 @@ export default function OrderCreateView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="order-create-page space-y-6">
       {/* Top Banner with back link */}
       <div className="atelier-page-heading flex items-center gap-4">
         <button
-          onClick={onBack}
+          aria-label="Retour" onClick={onBack}
           className="p-2.5 bg-stone-105 hover:bg-stone-200 text-stone-600 rounded-xl transition-all cursor-pointer"
           title="Retour aux commandes"
         >
@@ -177,7 +177,7 @@ export default function OrderCreateView({
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Main Select Product & Cards Catalog */}
-          <div className="lg:col-span-2 space-y-8 order-2 lg:order-1">
+          <div className="order-products lg:col-span-2 space-y-8 order-2 lg:order-1">
             
             {/* Café selector (if Admin) */}
             {!isCafe && (
@@ -227,7 +227,7 @@ export default function OrderCreateView({
                     return (
                       <div
                         key={p.id}
-                        className={`bg-white/60 backdrop-blur-md border rounded-2xl p-4 transition-all flex items-center justify-between ${
+                        className={`order-product-card bg-white/60 backdrop-blur-md border rounded-2xl p-4 transition-all flex items-center justify-between ${
                           qty > 0 ? "border-amber-400 bg-amber-50/10 shadow-sm" : "border-white/40 hover:bg-white/80"
                         }`}
                       >
@@ -242,7 +242,7 @@ export default function OrderCreateView({
                         </div>
 
                         {/* Plus/Minus controller */}
-                        <div className="flex items-center gap-2 shrink-0">
+                        <div className="order-product-controls flex items-center gap-2 shrink-0">
                           {qty > 0 ? (
                             <>
                               <button
@@ -294,8 +294,8 @@ export default function OrderCreateView({
           </div>
 
           {/* Persistent Order Summary Checkout panel */}
-          <div className="lg:col-span-1 order-1 lg:order-2">
-            <div className="bg-white/70 backdrop-blur-md rounded-3xl border border-white/50 p-6 shadow-xl shadow-amber-950/2 space-y-6 sticky top-6">
+          <div className="order-summary-column lg:col-span-1 order-1 lg:order-2">
+            <div id="order-summary" className="order-summary bg-white/70 backdrop-blur-md rounded-3xl border border-white/50 p-6 shadow-xl shadow-amber-950/2 space-y-6 sticky top-6">
               
               <div className="flex items-center gap-2 pb-4 border-b border-stone-100/80">
                 <ShoppingBag className="w-5 h-5 text-amber-800" />
@@ -306,7 +306,7 @@ export default function OrderCreateView({
                 <div className="text-center py-8 text-stone-400 space-y-2">
                   <p className="text-xs font-semibold">Le panier est encore vide</p>
                   <p className="text-[10px] leading-relaxed">
-                    Cliquez sur les produits de la liste de gauche pour composer votre commande.
+                    Ajoutez les produits qui vous font envie pour composer votre commande.
                   </p>
                 </div>
               ) : (
@@ -368,6 +368,7 @@ export default function OrderCreateView({
           </div>
 
         </form>
+        {totalQuantity > 0 && <a className="mobile-order-cartbar" href="#order-summary" aria-label={`Voir le panier : ${totalQuantity} pièces, ${estimatedValue.toFixed(3)} DT`}><ShoppingBag size={19} /><span>{totalQuantity} pièce{totalQuantity > 1 ? 's' : ''}</span><strong>{estimatedValue.toFixed(3).replace('.', ',')} DT</strong><span>Voir le panier ↗</span></a>}
     </div>
   );
 }

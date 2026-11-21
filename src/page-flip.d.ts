@@ -11,6 +11,7 @@ declare module 'page-flip' {
     getOrientation(): 'portrait' | 'landscape';
     getBoundsRect(): { left: number; top: number; width: number; height: number; pageWidth: number };
     getState(): string;
+    getSettings(): Record<string, string | number | boolean> & { minWidth: number };
     update(): void;
     destroy(): void;
   }

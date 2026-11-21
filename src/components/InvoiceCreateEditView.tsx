@@ -179,7 +179,7 @@ export default function InvoiceCreateEditView({
   };
 
   return (
-    <div className="space-y-6 font-sans">
+    <div className="invoice-editor-page space-y-6 font-sans">
       <div className="atelier-page-heading is-rose flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
@@ -486,7 +486,7 @@ export default function InvoiceCreateEditView({
                   const isKg = prod.name.toLowerCase().includes("kg") || prod.name.toLowerCase().includes("baklawa") || prod.name.toLowerCase().includes("kaak") || prod.name.toLowerCase().includes("samsa");
 
                   return (
-                    <div key={item.productId} className="py-3.5 flex justify-between items-center gap-4">
+                    <div key={item.productId} className="invoice-item-row py-3.5 flex justify-between items-center gap-4">
                       {/* Product identity */}
                       <div className="min-w-0 flex-1">
                         <span className="font-semibold text-stone-800 text-xs line-clamp-2 leading-tight">
@@ -553,7 +553,7 @@ export default function InvoiceCreateEditView({
             </div>
 
             {/* Form actions submission */}
-            <div className="pt-4 flex items-center justify-end gap-3 border-t border-stone-100">
+            <div className="invoice-editor-actions pt-4 flex items-center justify-end gap-3 border-t border-stone-100">
               <button
                 type="button"
                 onClick={onCancel}

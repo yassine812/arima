@@ -37,12 +37,12 @@ export default function InvoiceDetailPrintView({
   };
 
   return (
-    <div className="space-y-6 font-sans">
+    <div className="invoice-detail-page space-y-6 font-sans">
       {/* Upper bar with non-printable action headers */}
-      <div className="no-print bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 p-4 shadow-lg shadow-amber-950/2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="invoice-detail-toolbar no-print bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 p-4 shadow-lg shadow-amber-950/2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={onBack}
+            aria-label="Retour" onClick={onBack}
             className="p-2 hover:bg-stone-100 rounded-xl border border-stone-200 text-stone-600 transition-all cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -88,7 +88,8 @@ export default function InvoiceDetailPrintView({
         </div>
       )}
 
-      <div className="no-print bg-stone-50 border border-stone-200 rounded-xl p-3.5 text-xs text-stone-700 flex items-start gap-2.5">
+      <details className="mobile-print-help no-print"><summary>Enregistrer la facture en PDF</summary><p>Appuyez sur « Imprimer / PDF », puis choisissez « Enregistrer en PDF » ou l’option de partage de votre téléphone. Le document conserve son format A4.</p></details>
+      <div className="desktop-print-help no-print bg-stone-50 border border-stone-200 rounded-xl p-3.5 text-xs text-stone-700 flex items-start gap-2.5">
         <FileText className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
         <div>
           <span className="font-bold">Configuration :</span> Lors de l'ouverture de l'imprimante, choisissez l'imprimante virtuelle <span className="font-semibold text-stone-950">"Enregistrer au format PDF"</span> (ou <span className="font-semibold text-stone-950">"Save as PDF"</span>). Nous avons configuré une règle CSS pour masquer automatiquement les en-têtes (Google AI Studio) et les pieds de page (liens). Si certains s'affichent encore, veillez à décocher la case <span className="font-semibold text-stone-950">"En-têtes et pieds de page"</span> (Headers and footers) dans les options de votre imprimante ou navigateur.
@@ -125,7 +126,7 @@ export default function InvoiceDetailPrintView({
 
         {/* Product table */}
         <div className="py-6">
-          <table className="w-full text-left border-collapse text-xs">
+          <table className="invoice-items-table w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-stone-300 text-[10px] font-bold text-stone-605 uppercase tracking-wider">
                 <th className="py-2 pb-3">Produit</th>
@@ -139,16 +140,16 @@ export default function InvoiceDetailPrintView({
                 const itemBrut = item.price * item.quantity;
                 return (
                   <tr key={idx} className="hover:bg-stone-50/40">
-                    <td className="py-3 font-semibold text-stone-850">
+                    <td data-label="Produit" className="py-3 font-semibold text-stone-850">
                       {item.name}
                     </td>
-                    <td className="py-3 text-center font-mono font-medium text-stone-800">
+                    <td data-label="Quantité" className="py-3 text-center font-mono font-medium text-stone-800">
                       {item.quantity}
                     </td>
-                    <td className="py-3 text-right font-mono text-stone-600">
+                    <td data-label="Prix unitaire" className="py-3 text-right font-mono text-stone-600">
                       {formatDT(item.price)}
                     </td>
-                    <td className="py-3 text-right font-mono font-bold text-stone-900">
+                    <td data-label="Total" className="py-3 text-right font-mono font-bold text-stone-900">
                       {formatDT(itemBrut)}
                     </td>
                   </tr>

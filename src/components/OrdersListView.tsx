@@ -258,7 +258,7 @@ export default function OrdersListView({
                 <div className="order-card-actions flex flex-wrap items-center gap-3 shrink-0 self-end md:self-center">
                   
                   {/* Café user cancellation action (only if En attente) */}
-                  {isCafe && o.status === "En attente" && (
+                  {isCafe && o.status === "En attente" && !o.convertedToInvoiceId && (
                     <button
                       onClick={() => handleStatusChange(o.id, "Annulée")}
                       disabled={isConverting}
@@ -285,7 +285,7 @@ export default function OrdersListView({
                           <option value="En préparation">En préparation</option>
                           <option value="Prête">Prête</option>
                           <option value="Livrée">Livrée</option>
-                          <option value="Annulée">Annulée</option>
+                          <option value="Annulée" disabled={!!o.convertedToInvoiceId}>Annulée</option>
                         </select>
                       </div>
 
@@ -356,6 +356,7 @@ export default function OrdersListView({
                       <span>{o.convertedToInvoiceNumber} (Exporter PDF)</span>
                     </button>
                   )}
+                  {isCafe && o.invoiceGeneratedOnOrder && <p className="order-invoiced-note">Pour modifier votre sélection, contactez Maison ARIMA.</p>}
 
                 </div>
               </div>

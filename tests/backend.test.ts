@@ -247,6 +247,52 @@ test('conversion is atomic, keeps ordered prices, and cannot be repeated or dele
   assert.equal((await app.request('/api/orders/' + order.id, { cookie })).data.convertedToInvoiceId, invoice.id);
 });
 
+test('café checkout atomically issues one private invoice, two admin notifications, and survives concurrent retries', async t => {
+  const app = await setup(t);
+  const admin = await app.login(), cafe = await app.login('cafe_a', 'cafe-a-password'), other = await app.login('cafe_b', 'cafe-b-password');
+  const body = { submissionKey: 'checkout-retry-20261121', items: [{ productId: 'prod_custom', quantity: 3, price: 0 }], total: 0 };
+  const responses = await Promise.all([1, 2, 3].map(() => app.request('/api/orders', { method: 'POST', cookie: cafe, body })));
+  assert.ok(responses.every(response => response.status === 201));
+  assert.equal(new Set(responses.map(response => response.data.id)).size, 1);
+  const order = responses[0].data, invoice = order.invoice;
+  assert.ok(invoice.id);
+  assert.equal(order.status, 'En attente');
+  assert.equal(order.invoiceGeneratedOnOrder, true);
+  assert.equal(order.convertedToInvoiceId, invoice.id);
+  assert.equal(invoice.orderId, order.id);
+  assert.equal(invoice.total, 7.665);
+  assert.equal(invoice.taxEnabled, false);
+  assert.equal(invoice.status, 'unpaid');
+  assert.equal(app.store.list('orders').length, 1);
+  assert.equal(app.store.list('invoices').length, 1);
+  const notes = (await app.request('/api/notifications', { cookie: admin })).data;
+  assert.deepEqual(notes.map((note: any) => note.title).sort(), ['Nouvelle commande', 'Nouvelle facture reçue']);
+  assert.ok(notes.every((note: any) => note.invoiceId === invoice.id && note.orderId === order.id));
+  assert.equal((await app.request('/api/notifications', { cookie: cafe })).data.length, 1);
+  assert.equal((await app.request('/api/notifications', { cookie: other })).data.length, 0);
+  assert.equal((await app.request('/api/invoices/' + invoice.id, { cookie: other })).status, 403);
+  assert.equal((await app.request('/api/orders/' + order.id + '/convert', { method: 'POST', cookie: admin })).status, 409);
+  assert.equal((await app.request('/api/orders/' + order.id, { method: 'PUT', cookie: admin, body: { items: [{ productId: 'prod_custom', quantity: 4 }] } })).status, 409);
+  assert.equal((await app.request('/api/orders/' + order.id, { method: 'PUT', cookie: cafe, body: { status: 'Annulée' } })).status, 409);
+  for (const status of ['En préparation', 'Prête', 'Livrée']) assert.equal((await app.request('/api/orders/' + order.id, { method: 'PUT', cookie: admin, body: { status } })).status, 200);
+  assert.equal(app.store.get('invoices', invoice.id)!.total, 7.665);
+  assert.equal((await app.request('/api/orders', { method: 'POST', cookie: cafe, body: { ...body, items: [{ productId: 'prod_custom', quantity: 4 }] } })).status, 409);
+  await app.restart();
+  assert.equal((await app.request('/api/orders', { method: 'POST', cookie: cafe, body })).data.invoice.id, invoice.id);
+});
+
+test('a checkout notification failure rolls back the order, invoice and both number sequences', async t => {
+  const app = await setup(t), cafe = await app.login('cafe_a', 'cafe-a-password');
+  const save = app.store.save.bind(app.store);
+  (app.store as any).save = (table: string, record: any) => { if (table === 'notifications') throw new Error('Simulated notification failure'); return save(table as any, record); };
+  const body = { submissionKey: 'checkout-rollback-20261121', items: [{ productId: 'prod_custom', quantity: 2 }] };
+  assert.equal((await app.request('/api/orders', { method: 'POST', cookie: cafe, body })).status, 500);
+  assert.equal(app.store.list('orders').length, 0); assert.equal(app.store.list('invoices').length, 0); assert.equal(app.store.list('notifications').length, 0);
+  app.store.save = save;
+  const created = (await app.request('/api/orders', { method: 'POST', cookie: cafe, body })).data;
+  assert.ok(created.orderNumber.endsWith('0001')); assert.ok(created.invoice.invoiceNumber.endsWith('0001'));
+});
+
 test('validation, free prices, drafts, cancellation and sequence non-reuse', async t => {
   const app = await setup(t);
   const cookie = await app.login();

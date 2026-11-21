@@ -30,6 +30,8 @@ export interface Invoice {
   status: "paid" | "unpaid" | "draft";
   cafeId?: string;     // Reference to the originating café
   cafeName?: string;   // Label of the café on A4 vector layouts
+  orderId?: string;
+  orderNumber?: string;
 }
 
 export interface Cafe {
@@ -60,7 +62,11 @@ export interface Order {
   status: OrderStatus;
   convertedToInvoiceId?: string;
   convertedToInvoiceNumber?: string;
+  invoiceGeneratedOnOrder?: boolean;
+  submissionKey?: string;
 }
+
+export type OrderSubmissionResult = Order & { invoice?: Invoice };
 
 export interface AppNotification {
   id: string;
@@ -69,6 +75,8 @@ export interface AppNotification {
   date: string;
   read: boolean;
   recipientId: "admin" | string; // 'admin' or reference to cafeId
+  invoiceId?: string;
+  orderId?: string;
 }
 
 export interface DashboardStats {

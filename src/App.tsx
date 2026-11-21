@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from "react";
-import { AlertCircle, Check, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from 'react-dom';
+import { AlertCircle, Check, X, BellRing } from "lucide-react";
 import AppShell from "./components/AppShell";
 import BrandLogo from "./components/BrandLogo";
-import { Product, Invoice, DashboardStats, Cafe, Order, OrderStatus, AppNotification } from "./types";
+import { Product, Invoice, DashboardStats, Cafe, Order, OrderStatus, AppNotification, OrderSubmissionResult } from "./types";
+import OrderReceiptCelebration from './components/OrderReceiptCelebration';
 import DashboardView from "./components/DashboardView";
 import CafeDashboardView from "./components/CafeDashboardView";
 import CafeCinema from "./components/CafeCinema";
@@ -51,6 +53,10 @@ export default function App() {
   const [selectedInvoiceForEdit, setSelectedInvoiceForEdit] = useState<Invoice | null>(null);
   const [orderProductId, setOrderProductId] = useState<string | null>(null);
   const [orderConfirmation, setOrderConfirmation] = useState<string | null>(null);
+  const [orderReceipt, setOrderReceipt] = useState<{ order: Order; invoice: Invoice } | null>(null);
+  const [activity, setActivity] = useState<AppNotification | null>(null);
+  const seenNotifications = useRef(new Set<string>());
+  const notificationsReady = useRef(false);
 
   // Global loading and error indicators
   const [loading, setLoading] = useState(false);
@@ -74,6 +80,7 @@ export default function App() {
     setSelectedInvoiceForEdit(null);
     setOrderProductId(null);
     setOrderConfirmation(null);
+    setOrderReceipt(null); setActivity(null); seenNotifications.current.clear(); notificationsReady.current = false;
   };
 
   // The browser attaches the server session cookie to same-origin API requests.
@@ -143,6 +150,8 @@ export default function App() {
       if (notifsRes.ok) {
         const notifsData = await notifsRes.json();
         setNotifications(notifsData);
+        notifsData.forEach((notification: AppNotification) => seenNotifications.current.add(notification.id));
+        notificationsReady.current = true;
       }
     } catch (err: any) {
       console.error("Error loading Arima application records:", err);
@@ -158,6 +167,38 @@ export default function App() {
       loadAllData();
     }
   }, [token, selectedCafeId]);
+
+  // Vercel notifications use a lightweight visible-tab poll, without resetting
+  // a café's basket or an administrator's open form.
+  useEffect(() => {
+    if (!token || !currentUser?.id) return;
+    const controller = new AbortController(); let pending = false;
+    const sync = async () => {
+      if (document.hidden || pending || !notificationsReady.current) return;
+      pending = true;
+      try {
+        const response = await fetch('/api/notifications', { credentials: 'same-origin', signal: controller.signal });
+        if (!response.ok) return;
+        const incoming: AppNotification[] = await response.json();
+        if (controller.signal.aborted) return;
+        const fresh = incoming.filter(notification => !notification.read && !seenNotifications.current.has(notification.id));
+        incoming.forEach(notification => seenNotifications.current.add(notification.id));
+        setNotifications(incoming);
+        if (fresh.length) {
+          setActivity(fresh.find(notification => notification.title === 'Nouvelle facture reçue') || fresh.at(-1)!);
+          const scope = currentUser.role === 'cafe' ? currentUser.id : selectedCafeId;
+          const urls = ['/api/orders', '/api/invoices', scope === 'all' ? '/api/dashboard' : `/api/dashboard?cafeId=${scope}`];
+          const responses = await Promise.all(urls.map(url => fetch(url, { credentials: 'same-origin', signal: controller.signal })));
+          const values = await Promise.all(responses.map(response => response.ok ? response.json() : null));
+          if (!controller.signal.aborted) { if (values[0]) setOrders(values[0]); if (values[1]) setInvoices(values[1]); if (values[2]) setDashboardStats(values[2]); }
+        }
+      } catch { /* The next visible poll retries; an open order must remain usable. */ }
+      finally { pending = false; }
+    };
+    const timer = window.setInterval(sync, 10000);
+    window.addEventListener('focus', sync); document.addEventListener('visibilitychange', sync);
+    return () => { controller.abort(); clearInterval(timer); window.removeEventListener('focus', sync); document.removeEventListener('visibilitychange', sync); };
+  }, [token, currentUser?.id, selectedCafeId]);
 
   // --- Products CRUD handlers ---
   const handleAddProduct = async (prodData: Omit<Product, "id">) => {
@@ -304,6 +345,7 @@ export default function App() {
   const handleSubmitOrder = async (orderPayload: {
     cafeId: string;
     cafeName: string;
+    submissionKey: string;
     items: { productId: string; quantity: number }[];
   }) => {
     try {
@@ -312,11 +354,18 @@ export default function App() {
         body: JSON.stringify(orderPayload),
       });
       if (!res.ok) throw new Error("L'enregistrement de la commande a échoué.");
-      const savedOrder: Order = await res.json();
+      const savedOrder: OrderSubmissionResult = await res.json();
+      const { invoice, ...order } = savedOrder;
+      setOrders(previous => [...previous.filter(existing => existing.id !== order.id), order]);
+      if (invoice) setInvoices(previous => [...previous.filter(existing => existing.id !== invoice.id), invoice]);
       await loadAllData();
       setOrderProductId(null);
-      setOrderConfirmation(`Commande ${savedOrder.orderNumber} envoyée à Maison ARIMA.`);
-      setActiveTab("orders");
+      if (invoice) {
+        setSelectedInvoiceForView(invoice); setActiveTab('view-invoice'); setOrderReceipt({ order, invoice }); setOrderConfirmation(null);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      } else {
+        setOrderConfirmation(`Commande ${savedOrder.orderNumber} envoyée à Maison ARIMA.`); setActiveTab('orders');
+      }
     } catch (err: any) {
       throw err;
     }
@@ -379,14 +428,19 @@ export default function App() {
     setActiveTab("view-invoice");
   };
 
-  const handleViewInvoiceById = (invoiceId: string) => {
-    const inv = invoices.find(i => i.id === invoiceId);
-    if (inv) {
-      setSelectedInvoiceForView(inv);
-      setActiveTab("view-invoice");
-    } else {
-      alert("La facture demandée est introuvable ou n'est pas encore synchronisée.");
-    }
+  const handleViewInvoiceById = async (invoiceId: string) => {
+    try {
+      const local = invoices.find(i => i.id === invoiceId);
+      const invoice = local || await (await authFetch(`/api/invoices/${invoiceId}`)).json();
+      if (!invoice?.id) throw new Error('La facture est introuvable.');
+      setSelectedInvoiceForView(invoice); setActiveTab('view-invoice'); window.scrollTo({ top: 0, behavior: 'instant' });
+    } catch (error) { setErrorMessage(error instanceof Error ? error.message : 'Impossible d’ouvrir la facture.'); }
+  };
+  const handleOpenNotification = async (notification: AppNotification) => {
+    setActivity(null);
+    void handleMarkNotificationAsRead(notification.id);
+    if (notification.invoiceId) await handleViewInvoiceById(notification.invoiceId);
+    else if (notification.orderId) { await loadAllData(); setActiveTab('orders'); window.scrollTo({ top: 0, behavior: 'instant' }); }
   };
 
   const handleEditInvoiceClick = (inv: Invoice) => {
@@ -398,9 +452,11 @@ export default function App() {
   if (!currentUser) return <div className="boot-screen"><BrandLogo /><span>{errorMessage || 'Votre espace se prépare…'}</span>{errorMessage && <button className="btn-primary" onClick={loadAllData}>Réessayer</button>}</div>;
 
   const isCafe = currentUser.role === 'cafe';
-  const startOrder = (productId?: string) => { setOrderProductId(productId || null); setOrderConfirmation(null); setActiveTab('create-order'); };
+  const startOrder = (productId?: string) => { setOrderProductId(productId || null); setOrderConfirmation(null); setOrderReceipt(null); setActiveTab('create-order'); };
   const create = () => { setSelectedInvoiceForEdit(null); if (isCafe) startOrder(); else setActiveTab('create-invoice'); };
-  return <AppShell activeView={activeTab} onNavigate={view => { if (isCafe && !['products', 'orders', 'catalogue', 'invoices', 'dashboard'].includes(view)) return; setActiveTab(view as Tab); setSelectedInvoiceForEdit(null); }} user={currentUser} notifications={notifications} onReadNotification={handleMarkNotificationAsRead} onLogout={handleLogout} onCreate={create} onRefresh={loadAllData} loading={loading}>
+  return <AppShell activeView={activeTab} onNavigate={view => { if (isCafe && !['products', 'orders', 'catalogue', 'invoices', 'dashboard'].includes(view)) return; setActiveTab(view as Tab); setSelectedInvoiceForEdit(null); }} user={currentUser} notifications={notifications} onReadNotification={handleMarkNotificationAsRead} onOpenNotification={handleOpenNotification} onLogout={handleLogout} onCreate={create} onRefresh={loadAllData} loading={loading}>
+    {orderReceipt && <OrderReceiptCelebration order={orderReceipt.order} invoice={orderReceipt.invoice} onClose={() => setOrderReceipt(null)} />}
+    {activity && createPortal(<div className="new-activity-toast no-print" role="status"><BellRing size={23} /><div><strong>{activity.title}</strong><p>{activity.message}</p>{(activity.invoiceId || activity.orderId) && <button type="button" onClick={() => void handleOpenNotification(activity)}>{activity.invoiceId ? 'Voir la facture' : 'Voir la commande'} ↗</button>}</div><button type="button" aria-label="Fermer la notification" onClick={() => setActivity(null)}><X size={17} /></button></div>, document.body)}
     {errorMessage && <div className="error-banner" role="alert"><AlertCircle size={18} /><span>{errorMessage}</span><button onClick={loadAllData}>Réessayer</button></div>}
     {loading && !dashboardStats ? <div className="dashboard-skeleton" aria-label="Chargement des données"><div /><div /><div /><section /><section /></div> : <div className="view-content" aria-busy={loading}>
       {orderConfirmation && activeTab === 'orders' && <div className="success-banner" role="status"><Check size={18} /><span>{orderConfirmation}</span><button aria-label="Fermer la confirmation" onClick={() => setOrderConfirmation(null)}><X size={16} /></button></div>}

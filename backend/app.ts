@@ -120,7 +120,7 @@ export function createApp(store: Store | PostgresStore, options: AppOptions = {}
     const mustGet = async <K extends 'products' | 'cafes' | 'invoices' | 'orders' | 'notifications'>(table: K, recordId: string) => await store.get(table, recordId) ?? fail(404, 'Enregistrement introuvable.');
     const owns = (res: Response, cafeId?: string) => { if (user(res).role === 'cafe' && user(res).id !== cafeId)
         fail(403, 'Accès non autorisé à cet établissement.'); };
-    const notify = async (recipientId: string, title: string, message: string) => await store.save('notifications', { id: id('notif'), title, message, date: today(), read: false, recipientId });
+    const notify = async (recipientId: string, title: string, message: string, links: { invoiceId?: string; orderId?: string } = {}) => await store.save('notifications', { id: id('notif'), title, message, date: today(), read: false, recipientId, ...links });
     app.get('/api/health', route(async (_req, res) => {
         await store.db.prepare('SELECT 1').get();
         res.json({ status: 'ok', database: store instanceof Store ? 'sqlite' : 'postgres' });
@@ -341,22 +341,52 @@ export function createApp(store: Store | PostgresStore, options: AppOptions = {}
         if (user(res).role === 'cafe' && req.body.cafeId && req.body.cafeId !== cafeId)
             fail(403, 'Vous ne pouvez commander que pour votre établissement.');
         const cafe = await mustGet('cafes', cafeId);
-        const items = await resolveItems(req.body.items, cafe);
+        const submissionKey = text(req.body.submissionKey, 'Référence d’envoi', 100, true);
+        if (submissionKey && !/^[a-zA-Z0-9_-]{16,100}$/.test(submissionKey)) fail(400, 'Référence d’envoi invalide.');
         const order = await store.transaction(async () => {
+            // Serialize identical retries across serverless instances. A lost response
+            // must not charge the café twice or emit duplicate notifications.
+            if (submissionKey) {
+                if (!(store instanceof Store)) await store.db.prepare('SELECT pg_advisory_xact_lock(hashtext(?))').get(`order:${cafeId}:${submissionKey}`);
+                const previous = (await store.list('orders')).find(o => o.cafeId === cafeId && o.submissionKey === submissionKey);
+                if (previous) {
+                    const signature = (lines: any[]) => JSON.stringify(lines.map(it => [it?.productId, it?.quantity]).sort((a, b) => String(a[0]).localeCompare(String(b[0]))));
+                    if (!Array.isArray(req.body.items) || signature(req.body.items) !== signature(previous.items)) fail(409, 'Cet envoi correspond déjà à une autre sélection. Actualisez votre panier.');
+                    return { ...previous, ...(previous.convertedToInvoiceId ? { invoice: await mustGet('invoices', previous.convertedToInvoiceId) } : {}) };
+                }
+            }
+            const items = await resolveItems(req.body.items, cafe);
             const record: Order = {
                 id: id('order'), orderNumber: await store.nextNumber('orders'), date: today(), cafeId, cafeName: cafe.name, items,
                 totalQuantity: money(items.reduce((sum, it) => sum + it.quantity, 0)), estimatedValue: sumItems(items), status: 'En attente',
+                ...(submissionKey ? { submissionKey } : {}),
             };
+            let invoice: Invoice | undefined;
+            if (user(res).role === 'cafe') {
+                const previous = (await store.list('invoices')).filter(i => i.cafeId === cafeId).at(-1);
+                invoice = {
+                    id: id('inv'), invoiceNumber: await store.nextNumber('invoices'), date: record.date, customerName: cafe.name,
+                    customerPhone: previous?.customerPhone || '', customerAddress: previous?.customerAddress || '',
+                    items, subtotal: record.estimatedValue, taxEnabled: false, taxRate: 0, taxAmount: 0, total: record.estimatedValue,
+                    status: 'unpaid', cafeId, cafeName: cafe.name, orderId: record.id, orderNumber: record.orderNumber,
+                };
+                await store.save('invoices', invoice);
+                record.convertedToInvoiceId = invoice.id;
+                record.convertedToInvoiceNumber = invoice.invoiceNumber;
+                record.invoiceGeneratedOnOrder = true;
+                await notify('admin', 'Nouvelle facture reçue', `${invoice.invoiceNumber} pour ${record.orderNumber} — ${cafe.name} — ${invoice.total.toFixed(3)} DT`, { invoiceId: invoice.id, orderId: record.id });
+                await notify(cafeId, 'Votre facture est prête', `${invoice.invoiceNumber} — Commande ${record.orderNumber} reçue par Maison ARIMA.`, { invoiceId: invoice.id, orderId: record.id });
+            }
             await store.save('orders', record);
-            await notify(user(res).role === 'admin' ? cafeId : 'admin', 'Nouvelle commande', `${record.orderNumber} — ${cafe.name} — ${record.estimatedValue.toFixed(3)} DT`);
-            return record;
+            await notify(user(res).role === 'admin' ? cafeId : 'admin', 'Nouvelle commande', `${record.orderNumber} — ${cafe.name} — ${record.estimatedValue.toFixed(3)} DT`, { orderId: record.id, ...(invoice ? { invoiceId: invoice.id } : {}) });
+            return { ...record, ...(invoice ? { invoice } : {}) };
         });
         res.status(201).json(order);
     }));
     app.put('/api/orders/:id', route(async (req, res) => {
         const old = await mustGet('orders', req.params.id);
         owns(res, old.cafeId);
-        if (old.convertedToInvoiceId)
+        if (old.convertedToInvoiceId && !old.invoiceGeneratedOnOrder)
             fail(409, 'Cette commande a déjà été facturée.');
         if (user(res).role === 'cafe' && old.status !== 'En attente')
             fail(409, 'Seules les commandes en attente peuvent être modifiées.');
@@ -365,6 +395,8 @@ export function createApp(store: Store | PostgresStore, options: AppOptions = {}
             fail(400, 'Statut de commande invalide.');
         if (user(res).role === 'cafe' && status !== old.status && status !== 'Annulée')
             fail(403, 'Vous pouvez uniquement annuler votre commande en attente.');
+        if (old.invoiceGeneratedOnOrder && (req.body.items !== undefined || status === 'Annulée' || user(res).role === 'cafe'))
+            fail(409, 'Cette commande possède une facture. Contactez Maison ARIMA pour modifier ou annuler votre sélection.');
         const items = req.body.items === undefined ? old.items : await resolveItems(req.body.items, await mustGet('cafes', old.cafeId));
         const order = { ...old, status, items, totalQuantity: money(items.reduce((sum, it) => sum + it.quantity, 0)), estimatedValue: sumItems(items) };
         await store.transaction(async () => {
@@ -393,7 +425,7 @@ export function createApp(store: Store | PostgresStore, options: AppOptions = {}
                 id: id('inv'), invoiceNumber: await store.nextNumber('invoices'), date: today(), customerName: order.cafeName,
                 customerPhone: previous?.customerPhone || '', customerAddress: previous?.customerAddress || '',
                 items: order.items, subtotal: order.estimatedValue, taxEnabled: false, taxRate: 0, taxAmount: 0, total: order.estimatedValue,
-                status: 'unpaid', cafeId: order.cafeId, cafeName: order.cafeName,
+                status: 'unpaid', cafeId: order.cafeId, cafeName: order.cafeName, orderId: order.id, orderNumber: order.orderNumber,
             };
             await store.save('invoices', invoice);
             const updated = { ...order, status: 'Livrée' as const, convertedToInvoiceId: invoice.id, convertedToInvoiceNumber: invoice.invoiceNumber };

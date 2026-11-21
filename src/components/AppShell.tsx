@@ -12,6 +12,7 @@ interface Props {
   user: { name: string; role: string };
   notifications: AppNotification[];
   onReadNotification: (id: string) => Promise<void>;
+  onOpenNotification?: (notification: AppNotification) => void;
   onLogout: () => void;
   onCreate: () => void;
   onRefresh: () => void;
@@ -36,7 +37,7 @@ const cafeItems = [
   { id: 'invoices', label: 'Mes factures', icon: ReceiptText },
 ];
 
-export default function AppShell({ children, activeView, onNavigate, user, notifications, onReadNotification, onLogout, onCreate, onRefresh, loading }: Props) {
+export default function AppShell({ children, activeView, onNavigate, user, notifications, onReadNotification, onOpenNotification, onLogout, onCreate, onRefresh, loading }: Props) {
   const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 1023px)').matches);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -104,7 +105,7 @@ export default function AppShell({ children, activeView, onNavigate, user, notif
         <div className="topbar-location"><button ref={menuRef} className="icon-button mobile-menu-toggle" aria-label="Ouvrir le menu" aria-expanded={open} onClick={() => setOpen(true)}><Menu size={21} /></button><BrandLogo mark className="mobile-brand" /><span className="breadcrumb-maison">Maison ARIMA</span><ChevronRight size={13} className="breadcrumb-chevron" /><span className="breadcrumb-page">{(isCafe && cafeItems.find(item => item.id === activeView)?.label) || titles[activeView]}</span></div>
         <div className="topbar-actions"><button className={`icon-button refresh-button ${loading ? 'is-refreshing' : ''}`} aria-label="Actualiser les données" title="Actualiser" onClick={onRefresh} disabled={loading}><RefreshCw size={17} /></button>
           <div className="notifications-wrap"><button className={`icon-button ${showNotifications ? 'is-selected' : ''}`} aria-label={`Notifications${unread ? `, ${unread} non lue${unread > 1 ? "s" : ""}` : ''}`} aria-expanded={showNotifications} onClick={() => { setShowNotifications(!showNotifications); setShowProfile(false); }}><Bell size={19} />{unread > 0 && <span className="notification-dot" />}</button>
-            {showNotifications && <><button className="popover-dismiss" aria-label="Fermer les notifications" onClick={() => setShowNotifications(false)} /><div className="notification-popover"><div className="popover-heading"><h2>Notifications</h2><span>{unread} non lue{unread > 1 ? 's' : ''}</span></div><div className="notification-list">{notifications.length === 0 ? <p className="empty-copy">Vous êtes à jour. Aucune notification.</p> : [...notifications].reverse().map(n => <button key={n.id} className={`notification-item ${n.read ? '' : 'is-unread'}`} onClick={() => onReadNotification(n.id)}><span className="notification-item-top"><strong>{n.title}</strong><time>{new Date(n.date + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</time></span><span>{n.message}</span></button>)}</div></div></>}
+            {showNotifications && <><button className="popover-dismiss" aria-label="Fermer les notifications" onClick={() => setShowNotifications(false)} /><div className="notification-popover"><div className="popover-heading"><h2>Notifications</h2><span>{unread} non lue{unread > 1 ? 's' : ''}</span></div><div className="notification-list">{notifications.length === 0 ? <p className="empty-copy">Vous êtes à jour. Aucune notification.</p> : [...notifications].reverse().map(n => <button key={n.id} className={`notification-item ${n.read ? '' : 'is-unread'}`} onClick={() => { if ((n.invoiceId || n.orderId) && onOpenNotification) { setShowNotifications(false); onOpenNotification(n); } else void onReadNotification(n.id); }}><span className="notification-item-top"><strong>{n.title}</strong><time>{new Date(n.date + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</time></span><span>{n.message}</span></button>)}</div></div></>}
           </div>
           <div className="profile-wrap" ref={profileRef} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setShowProfile(false); }}>
             <button type="button" ref={profileButtonRef} className="topbar-user profile-toggle" aria-label="Ouvrir le menu du compte" aria-expanded={showProfile} aria-controls="profile-popover" onClick={() => { setShowProfile(!showProfile); setShowNotifications(false); }}>

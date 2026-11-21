@@ -5,6 +5,7 @@ import AtelierExperience from './components/AtelierExperience';
 import './index.css';
 import './mobile.css';
 import './invoice-stationery.css';
+import './order-receipt.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { ArrowLeft, Coffee, Plus, Minus, ShoppingBag, RefreshCw, AlertCircle } from "lucide-react";
 import { Product, Cafe } from "../types";
 import { productPhoto } from '../productPhotos';
@@ -9,7 +9,7 @@ interface OrderCreateViewProps {
   currentUser: { id: string; name: string; role: string } | null;
   initialProductId?: string | null;
   onBack: () => void;
-  onSubmitOrder: (orderData: { cafeId: string; cafeName: string; items: { productId: string; quantity: number }[] }) => Promise<void>;
+  onSubmitOrder: (orderData: { cafeId: string; cafeName: string; submissionKey: string; items: { productId: string; quantity: number }[] }) => Promise<void>;
 }
 
 export default function OrderCreateView({
@@ -35,6 +35,7 @@ export default function OrderCreateView({
   const [quantities, setQuantities] = useState<{ [productId: string]: number }>(() => initialProductId && products.some(p => p.id === initialProductId) ? { [initialProductId]: 1 } : {});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const submission = useRef({ signature: '', key: '' });
 
   // Helper to resolve unit price for product under selected cafe context
   const getProductPrice = (productId: string, basePrice: number): number => {
@@ -141,9 +142,12 @@ export default function OrderCreateView({
       }));
       
       const cafeName = matchedCafe ? matchedCafe.name : "Café";
+      const signature = JSON.stringify({ cafeId: selectedCafeId, items: itemsPayload });
+      if (signature !== submission.current.signature) submission.current = { signature, key: crypto.randomUUID() };
       await onSubmitOrder({
         cafeId: selectedCafeId,
         cafeName,
+        submissionKey: submission.current.key,
         items: itemsPayload,
       });
 
@@ -360,7 +364,7 @@ export default function OrderCreateView({
                   </button>
 
                   <p className="text-[10px] text-center text-stone-400">
-                    Votre commande sera transmise à Maison ARIMA. Retrouvez son avancement dans Mes commandes.
+                    {isCafe ? 'Votre facture sera créée dès l’envoi. Vous pourrez la télécharger ou l’imprimer, puis suivre la préparation dans Mes commandes.' : 'Votre commande sera transmise à Maison ARIMA. Retrouvez son avancement dans les commandes.'}
                   </p>
                 </div>
               )}

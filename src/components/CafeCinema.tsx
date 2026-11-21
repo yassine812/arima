@@ -5,8 +5,8 @@ import AtelierArt from './AtelierArt';
 
 const media = '/media/cafe-cinema';
 const films = [
-  { id: 'en-famille', title: 'Les petits bonheurs en famille', description: 'Noisette et classique : les petites bouchées se partagent.', duration: '2:11', note: 'Le petit moment gourmand', theme: 'vanilla', sticker: 'Nouveau · En famille', featured: false },
-  { id: 'a-partager', title: 'À deux, c’est encore meilleur.', description: 'Fraise, Oreo, classique et noisette : une dégustation à partager.', duration: '1:04', note: 'Encore une petite bouchée ?', theme: 'rose', sticker: 'Nouveau · À partager', featured: true },
+  { id: 'en-famille', title: 'Les petits bonheurs en famille', description: 'Noisette et classique : les petites bouchées se partagent.', duration: '2:11', note: 'Petit bonheur…', theme: 'vanilla', sticker: 'Nouveau · En famille', featured: false },
+  { id: 'a-partager', title: 'À deux, c’est encore meilleur.', description: 'Fraise, Oreo, classique et noisette : une dégustation à partager.', duration: '1:04', note: 'Une bouchée ?', theme: 'rose', sticker: 'Nouveau · À partager', featured: true },
   { id: 'la-collection', title: 'Les petits bonheurs de la maison', description: 'La collection ARIMA et les petites attentions qui font plaisir.', duration: '0:33', note: 'Un peu de nous…', theme: 'vanilla', sticker: 'Bienvenue à la maison', featured: false },
   { id: 'trois-saveurs', title: 'Trois goûts. Beaucoup de sourires.', description: 'Pistache, fraise, noisette : place aux premières bouchées.', duration: '1:28', note: 'Psst… regarde ici !', theme: 'rose', sticker: 'La pause à savourer', featured: false },
   { id: 'premieres-bouchees', title: 'Le petit coup de cœur', description: 'Les saveurs se découvrent, les envies se confirment.', duration: '1:32', note: 'Ça donne envie, non ?', theme: 'pistache', sticker: 'Une bouchée de bonheur', featured: false },

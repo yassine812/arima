@@ -5,8 +5,10 @@ import AtelierArt from './AtelierArt';
 
 const media = '/media/cafe-cinema';
 const films = [
+  { id: 'en-famille', title: 'Les petits bonheurs en famille', description: 'Noisette et classique : les petites bouchées se partagent.', duration: '2:11', note: 'Le petit moment gourmand', theme: 'vanilla', sticker: 'Nouveau · En famille', featured: false },
+  { id: 'a-partager', title: 'À deux, c’est encore meilleur.', description: 'Fraise, Oreo, classique et noisette : une dégustation à partager.', duration: '1:04', note: 'Encore une petite bouchée ?', theme: 'rose', sticker: 'Nouveau · À partager', featured: true },
   { id: 'la-collection', title: 'Les petits bonheurs de la maison', description: 'La collection ARIMA et les petites attentions qui font plaisir.', duration: '0:33', note: 'Un peu de nous…', theme: 'vanilla', sticker: 'Bienvenue à la maison', featured: false },
-  { id: 'trois-saveurs', title: 'Trois goûts. Beaucoup de sourires.', description: 'Pistache, fraise, noisette : place aux premières bouchées.', duration: '1:28', note: 'Psst… regarde ici !', theme: 'rose', sticker: 'La pause à savourer', featured: true },
+  { id: 'trois-saveurs', title: 'Trois goûts. Beaucoup de sourires.', description: 'Pistache, fraise, noisette : place aux premières bouchées.', duration: '1:28', note: 'Psst… regarde ici !', theme: 'rose', sticker: 'La pause à savourer', featured: false },
   { id: 'premieres-bouchees', title: 'Le petit coup de cœur', description: 'Les saveurs se découvrent, les envies se confirment.', duration: '1:32', note: 'Ça donne envie, non ?', theme: 'pistache', sticker: 'Une bouchée de bonheur', featured: false },
 ];
 type FilmEntry = typeof films[number];
@@ -95,7 +97,7 @@ function CinemaPlayer({ film, onClose }: { film: FilmEntry; onClose: () => void 
 }
 
 export default function CafeCinema({ onExplore }: { onExplore?: () => void }) {
-  const [active, setActive] = useState('trois-saveurs');
+  const [active, setActive] = useState('a-partager');
   const [selected, setSelected] = useState<FilmEntry | null>(null);
   const [tabVisible, setTabVisible] = useState(!document.hidden);
   const close = useCallback(() => setSelected(null), []);
@@ -106,8 +108,8 @@ export default function CafeCinema({ onExplore }: { onExplore?: () => void }) {
   }, []);
   return <section className="cafe-cinema" aria-labelledby="cafe-cinema-title" data-atelier-reveal>
     <div className="cinema-heading"><div><span className="cinema-kicker"><Film size={15} />LE PETIT CINÉMA ARIMA</span><h2 id="cafe-cinema-title">Ça se savoure aussi<br /><em>avec les yeux.</em><svg viewBox="0 0 350 20" aria-hidden="true"><path d="M5 13Q150 1 340 10M35 18Q198 6 308 16" /></svg></h2><p>Les créations de la maison, les premières bouchées et les petits coups de cœur. Installez-vous, on vous montre.</p></div><div className="cinema-companion" aria-hidden="true"><AtelierArt compact /><span>À regarder<br />avec un café…</span><Coffee size={22} /></div></div>
-    <div className="cinema-board">{films.map(film => <FilmCard key={film.id} film={film} active={active === film.id} allowedToPlay={tabVisible && !selected} onPreview={() => setActive(film.id)} onOpen={() => setSelected(film)} />)}</div>
-    <div className="cinema-footer"><span className="cinema-footer-note"><Sparkles size={18} />Attention, ça donne envie !</span>{onExplore && <button type="button" className="cinema-explore" onClick={onExplore}><CakeSlice size={17} />Choisir mes douceurs</button>}</div>
+    <div className={films.length === 5 ? "cinema-board cinema-board-expanded" : "cinema-board"}>{films.map(film => <FilmCard key={film.id} film={film} active={active === film.id} allowedToPlay={tabVisible && !selected} onPreview={() => setActive(film.id)} onOpen={() => setSelected(film)} />)}</div>
+    <div className="cinema-footer"><span className="cinema-footer-note"><Sparkles size={18} />Attention, ça donne envie !</span><a className="cinema-music-credit" href={`${media}/MUSIC-CREDITS.txt`} target="_blank" rel="noreferrer">Crédits musicaux</a>{onExplore && <button type="button" className="cinema-explore" onClick={onExplore}><CakeSlice size={17} />Choisir mes douceurs</button>}</div>
     {selected && <CinemaPlayer film={selected} onClose={close} />}
   </section>;
 }

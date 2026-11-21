@@ -115,11 +115,11 @@ The new transparent brand lockup is `public/brand/arima-logo-v2.png`; its matchi
 
 ### Café overview: Le petit cinéma ARIMA
 
-The café-only overview embeds the three finished ARIMA films in animated vanilla, rose and pistachio scrapbook frames (`src/components/CafeCinema.tsx`, `src/cafe-cinema.css`). Handwritten notes, drawn arrows, sparkles and pointer tilt match the existing atelier design. Clicking opens an accessible native dialog with the complete video, sound and standard playback controls; Escape, backdrop and the close button restore focus and scrolling.
+The café-only overview embeds five finished ARIMA films in animated vanilla, rose and pistachio scrapbook frames (`src/components/CafeCinema.tsx`, `src/cafe-cinema.css`). Handwritten notes, drawn arrows, sparkles and pointer tilt match the existing atelier design. Clicking opens an accessible native dialog with the complete video, sound and standard playback controls; Escape, backdrop and the close button restore focus and scrolling.
 
 Assets live in `public/media/cafe-cinema/`: original full-quality MP4s, lightweight silent seven-second previews, JPEG posters and a local Caveat font. Only the visible active preview plays; hidden tabs and the full player pause the other previews. Mobile puts the featured film first. Music attribution is retained in `MUSIC-CREDITS.txt` beside the videos. No API or café data changes are required.
 
-Validated with `npm run lint`, `npm run build`, desktop and 390 × 844 browser checks, playback of all three full films, modal close/focus restoration and navigation to products.
+Validated with `npm run lint`, `npm run build`, desktop and 390 × 844 browser checks, playback of the original three full films, modal close/focus restoration and navigation to products.
 
 ### Separate café and administrator overviews
 
@@ -131,4 +131,13 @@ Vercel serves the Vite build from `dist` and routes `/api/*` to `api/index.ts`. 
 
 For a one-time private migration of the existing local cafés, invoices, orders and account password hashes, pull the production environment into the ignored `.env.production.local` file and run `npm run db:migrate-production`. The migration refuses to overwrite a cloud database with existing café activity. Existing account passwords are preserved; local sessions are not copied. Never commit a database or environment file.
 
-The three full café videos are complete 720p web encodes (about 36 MiB total); their original high-quality masters remain in the separate local video workspace. `npm test` runs both local SQLite and real PostgreSQL-engine tests, including roles, ownership, transactions and invoice conversion. `npm run lint` and `npm run build` validate the application before publication.
+The five full café videos use complete 720p web encodes; their original high-quality masters remain in the separate local video workspace. `npm test` runs both local SQLite and real PostgreSQL-engine tests, including roles, ownership, transactions and invoice conversion. `npm run lint` and `npm run build` validate the application before publication.
+
+
+### New tasting films — 20–21 November 2026
+
+Two complete animated edits extend the showcase to five films: `en-famille` (2:11, Noisette and Classique in a square cup) and `a-partager` (1:04, Fraise, Oreo, Classique and Noisette). Product focus pauses use clean whole-product photographs, flavour ingredients drifting behind, handwritten callouts and tracked arrows. Original voices and creator marks remain. The source timeline is retained, including the four short inserted product holds in the second film.
+
+The new films use full 720p MP4 web encodes, silent 360p seven-second previews and portrait posters. Only the visible active preview plays. A six-column desktop grid centres the last two frames; the featured new film appears first on mobile. Music attribution is available through the showcase footer. No backend records or account permissions are changed. The editable 1080p masters and detailed provenance remain in the local video workspace under `output/arima_pair_1548_20261120/`.
+
+TypeScript excludes generated `dist`, `output` and ignored `tmp` maintenance files; application, backend, scripts and tests remain checked.

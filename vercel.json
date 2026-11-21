@@ -11,6 +11,8 @@
   },
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/index" },
+    { "source": "/boutique", "destination": "/boutique.html" },
+    { "source": "/boutique/", "destination": "/boutique.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

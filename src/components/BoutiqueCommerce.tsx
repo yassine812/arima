@@ -8,6 +8,7 @@ import BrandLogo from './BrandLogo';
 import { illustratedProductPhotos } from '../illustratedProducts';
 import { shopArtwork } from '../storefrontArtwork';
 import '../boutique-commerce.css';
+import '../boutique-product.css';
 
 const CART_KEY = 'arima-public-cart-v1';
 const PENDING_KEY = 'arima-public-pending-v1';
@@ -29,7 +30,8 @@ function readCart(): CartSelection[] {
 const lineKey = (item: CartSelection) => `${item.productId}:${item.variantId || ''}:${item.bundleId || ''}`;
 interface ShopContextValue {
   catalog: ShopCatalog | null; cart: CartSelection[]; count: number; open: () => void;
-  add: (product: ShopProduct, variantId?: string, bundleId?: string) => void; change: (item: CartSelection, quantity: number) => void;
+  add: (product: ShopProduct, variantId?: string, bundleId?: string, quantity?: number) => void; change: (item: CartSelection, quantity: number) => void;
+  view: (product: ShopProduct, variantId?: string, bundleId?: string) => void;
   pending: { attemptKey: string; items: CartSelection[] } | null;
 }
 const ShopContext = createContext<ShopContextValue | null>(null);
@@ -39,6 +41,7 @@ export function BoutiqueProvider({ children }: { children: ReactNode }) {
   const [catalog, setCatalog] = useState<ShopCatalog | null>(null);
   const [cart, setCart] = useState<CartSelection[]>(readCart);
   const [opened, setOpened] = useState(false);
+  const [detail, setDetail] = useState<{ product: ShopProduct; variantId?: string; bundleId?: string } | null>(null);
   const [pending, setPendingState] = useState<ShopContextValue['pending']>(() => {
     try { const value = JSON.parse(sessionStorage.getItem(PENDING_KEY) || 'null'); return value && /^[a-f\d-]{36}$/i.test(value.attemptKey) && Array.isArray(value.items) ? value : null; } catch { return null; }
   });
@@ -47,22 +50,25 @@ export function BoutiqueProvider({ children }: { children: ReactNode }) {
   useEffect(() => { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch { /* The in-memory cart remains usable. */ } }, [cart]);
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 2600); return () => clearTimeout(timer); }, [notice]);
   const setPending = useCallback((value: ShopContextValue['pending']) => { setPendingState(value); try { if (value) sessionStorage.setItem(PENDING_KEY, JSON.stringify(value)); else sessionStorage.removeItem(PENDING_KEY); } catch { /* No customer coordinates are saved in browser storage. */ } }, []);
-  const add = (product: ShopProduct, variantId?: string, bundleId?: string) => {
+  const add = (product: ShopProduct, variantId?: string, bundleId?: string, quantity = 1) => {
+    setDetail(null);
     if (pending) { setOpened(true); return; }
-    const item = { productId: product.id, quantity: 1, ...(variantId ? { variantId } : {}), ...(bundleId ? { bundleId } : {}) };
+    const maximum = Math.max(1, Math.floor(product.maxQuantity / (product.bundles.find(b => b.id === bundleId)?.quantity || 1)));
+    const item = { productId: product.id, quantity: Math.max(1, Math.min(maximum, quantity)), ...(variantId ? { variantId } : {}), ...(bundleId ? { bundleId } : {}) };
     setCart(old => {
       const found = old.find(entry => lineKey(entry) === lineKey(item));
-      if (found) return old.map(entry => entry === found ? { ...entry, quantity: Math.min(Math.floor(product.maxQuantity / (product.bundles.find(b => b.id === bundleId)?.quantity || 1)), entry.quantity + 1) } : entry);
+      if (found) return old.map(entry => entry === found ? { ...entry, quantity: Math.min(maximum, entry.quantity + item.quantity) } : entry);
       return old.length < 20 ? [...old, item] : old;
     });
     setNotice(`${product.name} a rejoint votre panier.`);
   };
   const change = (item: CartSelection, quantity: number) => { if (!pending) setCart(old => quantity <= 0 ? old.filter(entry => lineKey(entry) !== lineKey(item)) : old.map(entry => lineKey(entry) === lineKey(item) ? { ...entry, quantity: Math.min(50, quantity) } : entry)); };
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-  return <ShopContext.Provider value={{ catalog, cart, count, open: () => setOpened(true), add, change, pending }}>
+  return <ShopContext.Provider value={{ catalog, cart, count, open: () => { setDetail(null); setOpened(true); }, add, change, pending, view: (product, variantId, bundleId) => { setOpened(false); setDetail({ product, variantId, bundleId }); } }}>
     {children}
     {notice && <div className="shop-cart-toast" role="status"><CheckCircle2 size={19} />{notice}<button onClick={() => { setNotice(''); setOpened(true); }}>Voir le panier</button></div>}
     {opened && <BoutiqueCheckout onClose={() => setOpened(false)} setPending={setPending} clearCart={() => setCart([])} />}
+    {detail && <BoutiqueProductDetails key={detail.product.id} {...detail} onClose={() => setDetail(null)} />}
   </ShopContext.Provider>;
 }
 
@@ -86,12 +92,45 @@ function LiveProduct({ product }: { product: ShopProduct }) {
   const [bundleId, setBundleId] = useState(product.bundles.find(b => b.available)?.id || '');
   const bundle = product.bundles.find(b => b.id === bundleId);
   const available = product.available && (!product.variants.length || !!variant?.available) && (!product.bundles.length || !!bundle?.available);
-  return <article className="product-card boutique-product-card"><ProductArtwork product={shopArtwork(product)}><span className="product-category">{product.category}</span>{!available && <span className="shop-unavailable">De retour bientôt</span>}</ProductArtwork><div className="boutique-product-copy"><span className="boutique-product-note">Une petite touche de bonheur</span><h3>{product.name}</h3><p>{product.description || 'Une création gourmande signée ARIMA.'}</p>
+  const view = () => shop.view(product, variantId, bundleId);
+  return <article className="product-card boutique-product-card" onClick={event => { if (!(event.target as HTMLElement).closest('button,a,input,select,label')) view(); }}><ProductArtwork product={shopArtwork(product)}><span className="product-category">{product.category}</span>{!available && <span className="shop-unavailable">De retour bientôt</span>}<button type="button" className="shop-product-open" aria-label={`Voir ${product.name}`} aria-haspopup="dialog" onClick={view}><span>Découvrir cette douceur</span></button></ProductArtwork><div className="boutique-product-copy"><span className="boutique-product-note">Une petite touche de bonheur</span><h3><button type="button" className="shop-product-title" onClick={view} aria-haspopup="dialog">{product.name}</button></h3><p>{product.description || 'Une création gourmande signée ARIMA.'}</p>
     {product.variants.length > 0 && <label className="shop-variant">Votre format<select value={variantId} onChange={e => setVariantId(e.target.value)} aria-label={`Format de ${product.name}`}>{product.variants.map(v => <option key={v.id} value={v.id} disabled={!v.available}>{v.label || 'Format individuel'}{!v.available ? ' · indisponible' : ''}</option>)}</select></label>}
     {product.bundles.length > 0 && <label className="shop-variant">Votre offre<select value={bundleId} onChange={e => setBundleId(e.target.value)} aria-label={`Offre de ${product.name}`}>{product.bundles.map(b => <option key={b.id} value={b.id} disabled={!b.available}>{b.quantity} pcs · {shopMoney(b.price)} · {b.label}</option>)}</select></label>}
     <div className="shop-product-price"><strong>{shopMoney(bundle?.price ?? variant?.price ?? product.price)}</strong>{!variant && !bundle && product.comparePrice !== undefined && product.comparePrice > product.price && <del>{shopMoney(product.comparePrice)}</del>}</div>
     {product.externalOnly ? <a className="boutique-product-order" href={`${official}/product/${encodeURIComponent(product.slug)}`}>Choisir les options sur la boutique</a> : <button className="boutique-product-order" disabled={!available} onClick={() => shop.add(product, variantId || undefined, bundleId || undefined)}><Plus size={17} />{available ? 'Ajouter une douceur' : 'De retour bientôt'}</button>}
   </div></article>;
+}
+
+function BoutiqueProductDetails({ product, variantId: initialVariant, bundleId: initialBundle, onClose }: { product: ShopProduct; variantId?: string; bundleId?: string; onClose: () => void }) {
+  const shop = useBoutique(); const dialog = useRef<HTMLDialogElement>(null);
+  const [variantId, setVariantId] = useState(initialVariant || product.variants.find(v => v.available)?.id || '');
+  const [bundleId, setBundleId] = useState(initialBundle || product.bundles.find(b => b.available)?.id || '');
+  const [quantity, setQuantity] = useState(1);
+  const variant = product.variants.find(v => v.id === variantId);
+  const bundle = product.bundles.find(b => b.id === bundleId);
+  const available = product.available && (!product.variants.length || !!variant?.available) && (!product.bundles.length || !!bundle?.available);
+  const price = bundle?.price ?? variant?.price ?? product.price;
+  const maximum = Math.max(1, Math.floor(product.maxQuantity / (bundle?.quantity || 1)));
+  useEffect(() => {
+    const element = dialog.current!; const trigger = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    element.showModal(); document.body.style.overflow = 'hidden';
+    return () => { element.close(); document.body.style.overflow = overflow; if (trigger?.isConnected) trigger.focus({ preventScroll: true }); };
+  }, []);
+  return createPortal(<dialog ref={dialog} className="shop-product-dialog" aria-labelledby="shop-product-detail-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
+    <div className="shop-product-detail-shell">
+      <button type="button" className="shop-close shop-product-detail-close" aria-label="Fermer la fiche produit" onClick={onClose} autoFocus><X size={22} /></button>
+      <div className="shop-product-detail-art"><ProductArtwork product={shopArtwork(product)}><span className="product-category">{product.category}</span></ProductArtwork><span className="shop-product-detail-caption"><Heart size={15} />Une cuillère de bonheur.</span></div>
+      <div className="shop-product-detail-copy"><span className="boutique-eyebrow"><CakeSlice size={15} />LA TOUCHE ARIMA</span><h2 id="shop-product-detail-title">{product.name}</h2><p className="shop-product-detail-description">{product.description || 'Une création gourmande signée ARIMA, à savourer pour une petite pause tout en douceur.'}</p>
+        {product.variants.length > 0 && <label className="shop-variant">Votre format<select value={variantId} onChange={e => { setVariantId(e.target.value); setQuantity(1); }} aria-label={`Format de ${product.name}`}>{product.variants.map(v => <option key={v.id} value={v.id} disabled={!v.available}>{v.label || 'Format individuel'}{!v.available ? ' · indisponible' : ''}</option>)}</select></label>}
+        {product.bundles.length > 0 && <label className="shop-variant">Votre offre<select value={bundleId} onChange={e => { setBundleId(e.target.value); setQuantity(1); }} aria-label={`Offre de ${product.name}`}>{product.bundles.map(b => <option key={b.id} value={b.id} disabled={!b.available}>{b.quantity} pcs · {shopMoney(b.price)} · {b.label}</option>)}</select></label>}
+        <div className="shop-product-price"><strong>{shopMoney(price)}</strong>{!variant && !bundle && product.comparePrice !== undefined && product.comparePrice > price && <del>{shopMoney(product.comparePrice)}</del>}{bundle && <span>le lot de {bundle.quantity} pièce{bundle.quantity > 1 ? 's' : ''}</span>}</div>
+        {!product.externalOnly && available && <div className="shop-product-detail-quantity"><span>{bundle ? 'Nombre de lots' : 'Quantité'}</span><div className="shop-quantity"><button type="button" disabled={quantity <= 1} aria-label="Diminuer la quantité" onClick={() => setQuantity(q => q - 1)}><Minus size={16} /></button><output aria-live="polite" aria-label="Quantité sélectionnée">{quantity}</output><button type="button" disabled={quantity >= maximum} aria-label="Augmenter la quantité" onClick={() => setQuantity(q => q + 1)}><Plus size={16} /></button></div></div>}
+        {product.externalOnly ? <a className="boutique-button shop-wide" href={`${official}/product/${encodeURIComponent(product.slug)}`}>Choisir les options sur la boutique</a> : <button type="button" className="boutique-button shop-wide shop-product-detail-add" disabled={!available} onClick={() => shop.add(product, variantId || undefined, bundleId || undefined, quantity)}><ShoppingBag size={18} />{!available ? 'De retour bientôt' : shop.pending ? 'Vérifier ma commande en cours' : `Ajouter au panier · ${shopMoney(price * quantity)}`}</button>}
+        <p className="shop-product-detail-delivery">Livraison calculée dans votre panier. Paiement à la livraison.</p><button type="button" className="shop-back" onClick={onClose}>Continuer à découvrir les douceurs</button>
+      </div>
+    </div>
+  </dialog>, document.body);
 }
 
 function BoutiqueCheckout({ onClose, setPending, clearCart }: { onClose: () => void; setPending: (value: ShopContextValue['pending']) => void; clearCart: () => void }) {

@@ -29,7 +29,7 @@ const amount = (value: unknown) => {
 const cookie = (req: Request, name: string) => req.headers.cookie?.split(';').map(s => s.trim()).find(s => s.startsWith(`${name}=`))?.slice(name.length + 1);
 const plainText = (value: unknown) => typeof value === 'string' ? value.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim().slice(0, 800) : '';
 const image = (p: Vendor) => {
-  const src = p.images?.[0]?.md || p.images?.[0]?.lg || '';
+  const src = p.images?.[0]?.lg || p.images?.[0]?.md || '';
   try { const url = new URL(src); return url.protocol === 'https:' ? src : ''; } catch { return ''; }
 };
 const stockAllows = (p: Vendor, variant: Vendor | undefined, quantity: number) => {

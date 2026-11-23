@@ -6,6 +6,7 @@ import { AtelierMotion } from './AtelierMotion';
 import CafeCinema from './CafeCinema';
 import ProductArtwork from './ProductArtwork';
 import { BoutiqueProvider, BoutiqueLiveCollection, useBoutique } from './BoutiqueCommerce';
+import { storefrontFallbackPhotos } from '../storefrontPhotos';
 import type { Product } from '../types';
 import '../boutique-landing.css';
 
@@ -77,7 +78,7 @@ function BoutiqueContent() {
           <div className="boutique-section-heading"><div><span className="boutique-eyebrow"><CakeSlice size={16} />LES ENVIES DE LA MAISON</span><h2 id="boutique-creations-title">À chaque envie,<br /><em>sa petite merveille.</em></h2><p>Choisissez votre coup de cœur. Retrouvez les formats, les prix et les options disponibles sur notre boutique.</p></div><span className="boutique-heading-note" aria-hidden="true">Psst…<br />ça donne envie !<Scribble /></span></div>
           <div className="boutique-category-tabs" aria-label="Filtrer les créations">{['Tout', 'Tiramisus', 'Cheesecakes'].map(item => <button key={item} className={category === item ? 'is-active' : ''} aria-pressed={category === item} onClick={() => setCategory(item)}>{item === 'Tout' ? 'Toutes les douceurs' : item}</button>)}</div>
           <div className="boutique-product-grid">{creations.filter(item => category === 'Tout' || item.category === category).map(item => {
-            const product: Product = { ...item, price: 0, image: '' };
+            const product: Product = { ...item, price: 0, image: storefrontFallbackPhotos[item.id] };
             return <article key={item.id} className="product-card boutique-product-card"><ProductArtwork product={product}><span className="product-category">{item.category}</span></ProductArtwork><div className="boutique-product-copy"><span className="boutique-product-note">{item.note}</span><h3>{item.name}</h3><p>{item.description}</p><a className="boutique-product-order" href={`${shop}${'href' in item && item.href ? item.href : `/product/${item.slug}`}`}><ShoppingBag size={17} />{'href' in item && item.href ? 'Découvrir les cheesecakes' : 'Voir et commander'}</a></div></article>;
           })}</div>
           <div className="boutique-all-creations"><p>Plutôt une box à partager ou une autre saveur ?</p><a className="boutique-button" href={`${shop}/search`}><CakeSlice size={18} />Voir toute la collection</a></div>

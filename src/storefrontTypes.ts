@@ -1,14 +1,16 @@
 export interface ShopVariant { id: string; label: string; price: number; available: boolean }
+export interface ShopBundle { id: string; label: string; quantity: number; price: number; available: boolean }
 export interface ShopProduct {
   id: string; name: string; slug: string; description: string; image: string;
   category: string; price: number; comparePrice?: number; available: boolean;
-  variants: ShopVariant[]; maxQuantity: number; externalOnly: boolean;
+  variants: ShopVariant[]; bundles: ShopBundle[]; maxQuantity: number; externalOnly: boolean;
 }
 export interface ShopCatalog {
   connected: true; name: string; currency: string; decimals: number;
   cities: string[]; products: ShopProduct[];
 }
-export interface CartSelection { productId: string; quantity: number; variantId?: string }
+/** quantity counts selected offers when bundleId is present; the server expands offers to physical units. */
+export interface CartSelection { productId: string; quantity: number; variantId?: string; bundleId?: string }
 export interface ShopQuote {
   id: string; expiresAt: number; currency: string;
   items: (CartSelection & { name: string; variantLabel?: string; unitPrice: number; total: number; image: string })[];

@@ -154,3 +154,15 @@ test('Converty: production PostgreSQL persists OAuth and atomically prevents dup
   assert.equal((await s.order(q, key)).data.receipt.reference, 1082);
   assert.equal((await s.request('/api/converty/status', undefined, s.admin)).data.connected, true);
 });
+
+test('Converty: quantity offers keep their whole-tier price, expand physical units and share product stock', async t => {
+  const s = await setup(t);
+  s.vendor.products[0].bundles = { discountType: 'fixed', options: [{ id: 'one', quantity: 1, name: 'Une pièce', price: 10, deliveryPrice: 8 }, { id: 'four', quantity: 4, name: '3 + 1 offert', price: 30, deliveryPrice: 8 }] };
+  const selection = [{ productId, quantity: 2, bundleId: 'four' }];
+  const q = await s.quote(selection); assert.equal(q.subtotal, 60); assert.equal(q.total, 68);
+  const receipt = await s.order(q, randomUUID(), selection); assert.equal(receipt.status, 201);
+  assert.equal(s.vendor.lastOrder.cart[0].quantity, 8); assert.equal(s.vendor.lastOrder.cart[0].pricePerUnit, 7.5); assert.equal(s.vendor.lastOrder.cart[0].selectedBundleOptionId, 'four');
+  assert.equal((await s.request('/api/boutique/quote', { items: s.items }, s.shopper)).data.code, 'INVALID_VARIANT');
+  const tooMany = [{ productId, quantity: 5, bundleId: 'four' }, { productId, quantity: 1, bundleId: 'one' }];
+  assert.equal((await s.request('/api/boutique/quote', { items: tooMany }, s.shopper)).data.code, 'OUT_OF_STOCK');
+});

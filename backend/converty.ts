@@ -50,7 +50,9 @@ const variantLabel = (p: Vendor, variant: Vendor) => (p.options || []).map((opt:
 /** Only the public allowlist is returned to shoppers. Vendor costs, owner data and tokens stay server-side. */
 export function publicProduct(p: Vendor, categories: Map<string, string>): ShopProduct {
   const variants = Array.isArray(p.newVariants) ? p.newVariants : [];
-  const externalOnly = !!(p.hasActiveCoupon || p.variants?.length || p.bundles?.options?.length
+  const bundles: Vendor[] = p.bundles?.options || [];
+  const externalOnly = !!(p.hasActiveCoupon || p.variants?.length || (bundles.length && variants.length)
+    || bundles.some(b => !Number.isInteger(b.quantity) || b.quantity < 1 || b.quantity > 50 || amount(b.price) % b.quantity !== 0)
     || (p.options?.length && !variants.length));
   return {
     id: p._id, name: String(p.name || '').slice(0, 200), slug: String(p.slug || ''), description: plainText(p.description), image: image(p),
@@ -59,6 +61,7 @@ export function publicProduct(p: Vendor, categories: Map<string, string>): ShopP
     available: sellable(p) && (variants.length ? variants.some((v: Vendor) => stockAllows(p, v, 1)) : stockAllows(p, undefined, 1)),
     maxQuantity: p.allowQuantityButton === false ? 1 : 50, externalOnly,
     variants: variants.map((v: Vendor) => ({ id: String(v.id), label: variantLabel(p, v), price: amount(v.price) / 1000, available: stockAllows(p, v, 1) })),
+    bundles: bundles.map(b => ({ id: String(b.id), label: plainText(b.name), quantity: b.quantity, price: amount(b.price) / 1000, available: stockAllows(p, undefined, b.quantity) })),
   };
 }
 export function selections(value: unknown): CartSelection[] {
@@ -66,14 +69,14 @@ export function selections(value: unknown): CartSelection[] {
   const result = new Map<string, CartSelection>();
   for (const raw of value) {
     if (!raw || !idPattern.test(raw.productId) || !Number.isInteger(raw.quantity) || raw.quantity < 1 || raw.quantity > 50
-      || (raw.variantId !== undefined && (typeof raw.variantId !== 'string' || raw.variantId.length > 200))) return issue(400, 'INVALID_CART', 'Votre sélection est invalide.');
-    const key = `${raw.productId}:${raw.variantId || ''}`;
-    const entry = result.get(key) || { productId: raw.productId, quantity: 0, ...(raw.variantId ? { variantId: raw.variantId } : {}) };
+      || ['variantId', 'bundleId'].some(key => raw[key] !== undefined && (typeof raw[key] !== 'string' || raw[key].length > 200))) return issue(400, 'INVALID_CART', 'Votre sélection est invalide.');
+    const key = `${raw.productId}:${raw.variantId || ''}:${raw.bundleId || ''}`;
+    const entry = result.get(key) || { productId: raw.productId, quantity: 0, ...(raw.variantId ? { variantId: raw.variantId } : {}), ...(raw.bundleId ? { bundleId: raw.bundleId } : {}) };
     entry.quantity += raw.quantity;
     if (entry.quantity > 50) issue(400, 'INVALID_CART', 'Limite de cinquante pièces par création.');
     result.set(key, entry);
   }
-  return [...result.values()].sort((a, b) => `${a.productId}:${a.variantId || ''}`.localeCompare(`${b.productId}:${b.variantId || ''}`));
+  return [...result.values()].sort((a, b) => `${a.productId}:${a.variantId || ''}:${a.bundleId || ''}`.localeCompare(`${b.productId}:${b.variantId || ''}:${b.bundleId || ''}`));
 }
 
 export class ConvertyCommerce {
@@ -246,17 +249,22 @@ export class ConvertyCommerce {
       const exposed = publicProduct(p, catalog.categories);
       if (exposed.externalOnly || item.quantity > exposed.maxQuantity) issue(409, 'PRODUCT_CHANGED', 'Les options de cette création ont changé. Actualisez votre panier.');
       const variant = item.variantId ? p.newVariants?.find((v: Vendor) => v.id === item.variantId) : undefined;
+      const bundle = item.bundleId ? p.bundles?.options?.find((b: Vendor) => b.id === item.bundleId) : undefined;
+      if ((p.bundles?.options?.length && !bundle) || (item.bundleId && !bundle)) issue(400, 'INVALID_VARIANT', 'Choisissez votre offre.');
+      const physicalQuantity = item.quantity * (bundle?.quantity || 1);
+      if (physicalQuantity > 50) issue(400, 'INVALID_CART', 'Limite de cinquante pièces par création.');
       if ((p.newVariants?.length && !variant) || (item.variantId && !variant)) issue(400, 'INVALID_VARIANT', 'Choisissez le format de votre création.');
-      if (!stockAllows(p, variant, item.quantity)) issue(409, 'OUT_OF_STOCK', `${p.name} n’est pas disponible dans cette quantité.`);
-      let unit = amount(variant?.price ?? p.price);
-      if (!variant && Array.isArray(p.discounts)) for (const tier of [...p.discounts].sort((a, b) => a.quantity - b.quantity)) {
+      const combinedQuantity = items.filter(other => other.productId === item.productId && other.variantId === item.variantId).reduce((sum, other) => sum + other.quantity * (p.bundles?.options?.find((b: Vendor) => b.id === other.bundleId)?.quantity || 1), 0);
+      if (!stockAllows(p, variant, combinedQuantity)) issue(409, 'OUT_OF_STOCK', `${p.name} n’est pas disponible dans cette quantité.`);
+      let unit = amount(bundle?.price ?? variant?.price ?? p.price);
+      if (!variant && !bundle && Array.isArray(p.discounts)) for (const tier of [...p.discounts].sort((a, b) => a.quantity - b.quantity)) {
         if (Number.isInteger(tier.quantity) && tier.quantity > 0 && item.quantity >= tier.quantity) unit = Math.min(unit, amount(tier.price));
       }
-      const delivery = amount(variant?.deliveryPrice ?? p.deliveryPrice);
+      const delivery = amount(bundle?.deliveryPrice ?? variant?.deliveryPrice ?? p.deliveryPrice);
       shipping.push(delivery); costs.push(amount(variant?.deliveryCost ?? p.deliveryCost ?? 0));
       if (p.forceDeliveryPrice) forced.push(delivery);
-      lines.push({ ...item, name: p.name, ...(variant ? { variantLabel: variantLabel(p, variant) } : {}), image: image(p), unitPrice: unit / 1000, total: unit * item.quantity / 1000 });
-      vendorLines.push({ product: p._id, quantity: item.quantity, pricePerUnit: unit / 1000, ...(variant ? { selectedVariantsId: variant.id, selectedVariants: p.options.map((opt: Vendor, i: number) => ({ name: opt.name, type: opt.type, value: opt.values.find((v: Vendor) => v.id === variant.selectedValues[i])?.value })) } : {}) });
+      lines.push({ ...item, name: p.name, ...(variant ? { variantLabel: variantLabel(p, variant) } : bundle ? { variantLabel: `${bundle.quantity} pièce${bundle.quantity > 1 ? 's' : ''} · ${plainText(bundle.name)}` } : {}), image: image(p), unitPrice: unit / 1000, total: unit * item.quantity / 1000 });
+      vendorLines.push({ product: p._id, quantity: physicalQuantity, pricePerUnit: unit / (bundle?.quantity || 1) / 1000, ...(bundle ? { selectedBundleOptionId: bundle.id } : {}), ...(variant ? { selectedVariantsId: variant.id, selectedVariants: p.options.map((opt: Vendor, i: number) => ({ name: opt.name, type: opt.type, value: opt.values.find((v: Vendor) => v.id === variant.selectedValues[i])?.value })) } : {}) });
     });
     // ARIMA currently has one flat product delivery charge. Do not guess a carrier/weight rule.
     const deliveryValues = forced.length ? forced : shipping;
@@ -316,7 +324,7 @@ export class ConvertyCommerce {
       }
       await this.limit(req, 'orders', 8, 3600000);
       const saved = attemptPattern.test(req.body.quoteId || '') ? await this.get(`quote:${req.body.quoteId}`) : undefined;
-      if (!saved || saved.owner !== owner || saved.quote.expiresAt <= this.now() || JSON.stringify(saved.quote.items.map(({ productId, quantity, variantId }: CartSelection) => ({ productId, quantity, ...(variantId ? { variantId } : {}) }))) !== cartSignature) issue(409, 'QUOTE_EXPIRED', 'Vérifiez le total de votre panier avant de valider.');
+      if (!saved || saved.owner !== owner || saved.quote.expiresAt <= this.now() || JSON.stringify(selections(saved.quote.items)) !== cartSignature) issue(409, 'QUOTE_EXPIRED', 'Vérifiez le total de votre panier avant de valider.');
       const current = await this.calculate(items, owner);
       if (!this.compareQuotes(saved.quote, current.quote)) {
         await this.put(`quote:${current.quote.id}`, current);

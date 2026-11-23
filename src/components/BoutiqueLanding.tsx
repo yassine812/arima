@@ -47,7 +47,7 @@ function BoutiqueContent() {
       <button className="boutique-menu-toggle" aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'} aria-expanded={menuOpen} aria-controls="boutique-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
       <nav id="boutique-navigation" className={menuOpen ? 'is-open' : ''} aria-label="Navigation principale" onClick={() => setMenuOpen(false)}>
         <a href="#videos"><Film size={16} />Nos petites vidéos</a><a href="#creations"><CakeSlice size={16} />Les créations</a><a href="#comment-commander">Comment commander</a>
-        {commerce.catalog ? <button className="boutique-button" onClick={commerce.open}><ShoppingBag size={17} />Mon panier <span className="shop-count">{commerce.count}</span></button> : <a className="boutique-button" href={`${shop}/search`}><ShoppingBag size={17} />Commander</a>}
+        {(commerce.catalog || commerce.pending) ? <button className="boutique-button" onClick={commerce.open}><ShoppingBag size={17} />Mon panier <span className="shop-count">{commerce.count}</span></button> : <a className="boutique-button" href={`${shop}/search`}><ShoppingBag size={17} />Commander</a>}
       </nav>
     </header>
 
@@ -94,6 +94,6 @@ function BoutiqueContent() {
       </div>
     </AtelierMotion>
     <footer className="boutique-footer"><BrandLogo /><p>La touche ARIMA.<br /><em>Les petits bonheurs, tout simplement.</em></p><div><a href="https://www.instagram.com/arima_tn/" target="_blank" rel="noreferrer">Instagram</a><a href="#creations">La boutique</a><a href="/espace">Espace café partenaire</a></div><small>© {new Date().getFullYear()} ARIMA · Tiramisu & Cheesecake</small></footer>
-    {commerce.catalog ? <button className="boutique-mobile-order" onClick={commerce.open}><ShoppingBag size={18} />Mon panier de douceurs <span className="shop-count">{commerce.count}</span></button> : <a className="boutique-mobile-order" href={`${shop}/search`}><ShoppingBag size={18} />Choisir mes douceurs</a>}
+    {(commerce.catalog || commerce.pending) ? <button className="boutique-mobile-order" onClick={commerce.open}><ShoppingBag size={18} />Mon panier de douceurs <span className="shop-count">{commerce.count}</span></button> : <a className="boutique-mobile-order" href={`${shop}/search`}><ShoppingBag size={18} />Choisir mes douceurs</a>}
   </div>;
 }

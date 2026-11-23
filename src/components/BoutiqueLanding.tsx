@@ -5,6 +5,7 @@ import AtelierArt from './AtelierArt';
 import { AtelierMotion } from './AtelierMotion';
 import CafeCinema from './CafeCinema';
 import ProductArtwork from './ProductArtwork';
+import { BoutiqueProvider, BoutiqueLiveCollection, useBoutique } from './BoutiqueCommerce';
 import type { Product } from '../types';
 import '../boutique-landing.css';
 
@@ -23,6 +24,10 @@ function Scribble({ className = '' }: { className?: string }) {
 }
 
 export default function BoutiqueLanding() {
+  return <BoutiqueProvider><BoutiqueContent /></BoutiqueProvider>;
+}
+function BoutiqueContent() {
+  const commerce = useBoutique();
   const [menuOpen, setMenuOpen] = useState(false);
   const [category, setCategory] = useState('Tout');
   useEffect(() => {
@@ -42,7 +47,7 @@ export default function BoutiqueLanding() {
       <button className="boutique-menu-toggle" aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'} aria-expanded={menuOpen} aria-controls="boutique-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</button>
       <nav id="boutique-navigation" className={menuOpen ? 'is-open' : ''} aria-label="Navigation principale" onClick={() => setMenuOpen(false)}>
         <a href="#videos"><Film size={16} />Nos petites vidéos</a><a href="#creations"><CakeSlice size={16} />Les créations</a><a href="#comment-commander">Comment commander</a>
-        <a className="boutique-button" href={`${shop}/search`}><ShoppingBag size={17} />Commander</a>
+        {commerce.catalog ? <button className="boutique-button" onClick={commerce.open}><ShoppingBag size={17} />Mon panier <span className="shop-count">{commerce.count}</span></button> : <a className="boutique-button" href={`${shop}/search`}><ShoppingBag size={17} />Commander</a>}
       </nav>
     </header>
 
@@ -68,27 +73,27 @@ export default function BoutiqueLanding() {
 
         <div id="videos" className="boutique-section-anchor"><CafeCinema onExplore={explore} /></div>
 
-        <section id="creations" className="boutique-creations boutique-section-anchor" aria-labelledby="boutique-creations-title">
-          <div className="boutique-section-heading"><div><span className="boutique-eyebrow"><CakeSlice size={16} />LES ENVIES DE LA MAISON</span><h2 id="boutique-creations-title">À chaque envie,<br /><em>sa petite merveille.</em></h2><p>Choisissez votre coup de cœur. Les formats, les prix et la commande vous attendent sur la boutique.</p></div><span className="boutique-heading-note" aria-hidden="true">Psst…<br />ça donne envie !<Scribble /></span></div>
+        <BoutiqueLiveCollection fallback={<section id="creations" className="boutique-creations boutique-section-anchor" aria-labelledby="boutique-creations-title">
+          <div className="boutique-section-heading"><div><span className="boutique-eyebrow"><CakeSlice size={16} />LES ENVIES DE LA MAISON</span><h2 id="boutique-creations-title">À chaque envie,<br /><em>sa petite merveille.</em></h2><p>Choisissez votre coup de cœur. Retrouvez les formats, les prix et les options disponibles sur notre boutique.</p></div><span className="boutique-heading-note" aria-hidden="true">Psst…<br />ça donne envie !<Scribble /></span></div>
           <div className="boutique-category-tabs" aria-label="Filtrer les créations">{['Tout', 'Tiramisus', 'Cheesecakes'].map(item => <button key={item} className={category === item ? 'is-active' : ''} aria-pressed={category === item} onClick={() => setCategory(item)}>{item === 'Tout' ? 'Toutes les douceurs' : item}</button>)}</div>
           <div className="boutique-product-grid">{creations.filter(item => category === 'Tout' || item.category === category).map(item => {
             const product: Product = { ...item, price: 0, image: '' };
             return <article key={item.id} className="product-card boutique-product-card"><ProductArtwork product={product}><span className="product-category">{item.category}</span></ProductArtwork><div className="boutique-product-copy"><span className="boutique-product-note">{item.note}</span><h3>{item.name}</h3><p>{item.description}</p><a className="boutique-product-order" href={`${shop}${'href' in item && item.href ? item.href : `/product/${item.slug}`}`}><ShoppingBag size={17} />{'href' in item && item.href ? 'Découvrir les cheesecakes' : 'Voir et commander'}</a></div></article>;
           })}</div>
           <div className="boutique-all-creations"><p>Plutôt une box à partager ou une autre saveur ?</p><a className="boutique-button" href={`${shop}/search`}><CakeSlice size={18} />Voir toute la collection</a></div>
-        </section>
+        </section>} />
 
         <section className="boutique-sharing" aria-labelledby="boutique-sharing-title" data-atelier-reveal>
           <div className="boutique-sharing-illustration" aria-hidden="true"><img src="/brand/motion/tiramisu.svg" alt="" /><Heart /><img src="/brand/motion/cheesecake.svg" alt="" /></div>
-          <div><span className="boutique-eyebrow">LES JOIES QUI SE PARTAGENT</span><h2 id="boutique-sharing-title">Un pour toi.<br /><em>Un pour moi.</em></h2><p>Impossible de choisir ? Retrouvez nos box gourmandes et offrez-vous une dégustation à plusieurs.</p><a className="boutique-button" href={`${shop}/category/box-gourmande`}><Heart size={18} />Découvrir les box gourmandes</a></div>
+          <div><span className="boutique-eyebrow">LES JOIES QUI SE PARTAGENT</span><h2 id="boutique-sharing-title">Un pour toi.<br /><em>Un pour moi.</em></h2><p>Impossible de choisir ? Retrouvez nos box gourmandes et offrez-vous une dégustation à plusieurs.</p><a className="boutique-button" href={commerce.catalog ? "#creations" : `${shop}/category/box-gourmande`}><Heart size={18} />Découvrir les box gourmandes</a></div>
         </section>
 
-        <section id="comment-commander" className="boutique-how boutique-section-anchor" aria-labelledby="boutique-how-title"><span className="boutique-eyebrow"><ShoppingBag size={16} />VOTRE PROCHAINE PAUSE</span><h2 id="boutique-how-title">Quelques clics.<br /><em>Puis, la gourmandise.</em></h2><div className="boutique-how-grid"><article><CakeSlice /><h3>Une envie</h3><p>Explorez les créations et trouvez la saveur qui vous fait sourire.</p></article><article><ShoppingBag /><h3>Votre sélection</h3><p>Ouvrez le produit sur notre boutique Converty et composez votre panier.</p></article><article><Heart /><h3>Le petit bonheur</h3><p>Renseignez vos coordonnées, vérifiez le total et validez votre commande.</p></article></div><a className="boutique-button" href={`${shop}/search`}>C’est l’heure de la pause</a></section>
+        <section id="comment-commander" className="boutique-how boutique-section-anchor" aria-labelledby="boutique-how-title"><span className="boutique-eyebrow"><ShoppingBag size={16} />VOTRE PROCHAINE PAUSE</span><h2 id="boutique-how-title">Quelques clics.<br /><em>Puis, la gourmandise.</em></h2><div className="boutique-how-grid"><article><CakeSlice /><h3>Une envie</h3><p>Explorez les créations et trouvez la saveur qui vous fait sourire.</p></article><article><ShoppingBag /><h3>Votre sélection</h3><p>Choisissez vos formats et ajoutez vos douceurs préférées au panier.</p></article><article><Heart /><h3>Le petit bonheur</h3><p>Renseignez vos coordonnées, vérifiez le total et validez votre commande.</p></article></div><a className="boutique-button" href={commerce.catalog ? "#creations" : `${shop}/search`}>C’est l’heure de la pause</a></section>
 
-        <section className="boutique-questions" aria-labelledby="boutique-questions-title"><h2 id="boutique-questions-title">Une petite question ?</h2><details><summary>Où retrouver les prix et les formats ?</summary><p>Sur chaque fiche de notre boutique. Le bouton « Voir et commander » vous emmène directement au bon endroit, avec les tarifs et les options disponibles.</p></details><details><summary>Comment connaître le total de ma commande ?</summary><p>La boutique Converty affiche le récapitulatif de votre panier et les frais de livraison avant validation.</p></details><details><summary>Peut-on choisir plusieurs saveurs ?</summary><p>Oui : ajoutez vos créations préférées au panier, ou découvrez les box dans la collection Box Gourmande.</p></details></section>
+        <section className="boutique-questions" aria-labelledby="boutique-questions-title"><h2 id="boutique-questions-title">Une petite question ?</h2><details><summary>Où retrouver les prix et les formats ?</summary><p>Sur chaque fiche de notre collection, avec les formats et les options disponibles. Choisissez votre douceur pour composer votre panier.</p></details><details><summary>Comment connaître le total de ma commande ?</summary><p>Le récapitulatif affiche vos douceurs, les frais de livraison et le total avant votre confirmation.</p></details><details><summary>Peut-on choisir plusieurs saveurs ?</summary><p>Oui : ajoutez vos créations préférées au panier, ou découvrez les box dans la collection Box Gourmande.</p></details></section>
       </div>
     </AtelierMotion>
-    <footer className="boutique-footer"><BrandLogo /><p>La touche ARIMA.<br /><em>Les petits bonheurs, tout simplement.</em></p><div><a href="https://www.instagram.com/arima_tn/" target="_blank" rel="noreferrer">Instagram</a><a href={shop}>La boutique</a><a href="/">Espace café partenaire</a></div><small>© {new Date().getFullYear()} ARIMA · Tiramisu & Cheesecake</small></footer>
-    <a className="boutique-mobile-order" href={`${shop}/search`}><ShoppingBag size={18} />Choisir mes douceurs</a>
+    <footer className="boutique-footer"><BrandLogo /><p>La touche ARIMA.<br /><em>Les petits bonheurs, tout simplement.</em></p><div><a href="https://www.instagram.com/arima_tn/" target="_blank" rel="noreferrer">Instagram</a><a href="#creations">La boutique</a><a href="/espace">Espace café partenaire</a></div><small>© {new Date().getFullYear()} ARIMA · Tiramisu & Cheesecake</small></footer>
+    {commerce.catalog ? <button className="boutique-mobile-order" onClick={commerce.open}><ShoppingBag size={18} />Mon panier de douceurs <span className="shop-count">{commerce.count}</span></button> : <a className="boutique-mobile-order" href={`${shop}/search`}><ShoppingBag size={18} />Choisir mes douceurs</a>}
   </div>;
 }

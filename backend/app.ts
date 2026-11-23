@@ -4,6 +4,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { Store, checkPassword, hashPassword, tokenHash } from './database.js';
 import type { PostgresStore } from './postgres';
 import type { Product, Cafe, Invoice, InvoiceItem, Order, OrderStatus } from '../src/types';
+import { ConvertyCommerce, type ConvertyOptions } from './converty.js';
 class ApiError extends Error {
     constructor(readonly status: number, message: string) { super(message); }
 }
@@ -60,9 +61,11 @@ interface User {
 export interface AppOptions {
     sessionHours?: number;
     secureCookie?: boolean;
+    converty?: ConvertyOptions;
 }
 export function createApp(store: Store | PostgresStore, options: AppOptions = {}) {
     const app = express();
+    if (process.env.VERCEL) app.set('trust proxy', 1);
     app.disable('x-powered-by');
     if (store instanceof Store) {
         // A local SQLite connection has one transaction context. Queue requests
@@ -174,6 +177,8 @@ export function createApp(store: Store | PostgresStore, options: AppOptions = {}
         res.clearCookie('arima_session', cookieOptions);
         res.json({ success: true });
     }));
+    const commerce = new ConvertyCommerce(store, options.converty);
+    commerce.mountPublic(app);
     app.use('/api', route(async (req, res, next) => {
         const token = cookieToken(req);
         if (!token)
@@ -187,6 +192,7 @@ export function createApp(store: Store | PostgresStore, options: AppOptions = {}
         next();
     }));
     app.get('/api/auth/me', route(async (_req, res) => { res.json({ valid: true, user: user(res) }); }));
+    commerce.mountAdmin(app, admin);
     const productData = (body: any): Omit<Product, 'id'> => ({
         name: text(body.name, 'Nom du produit'), price: money(number(body.price, 'Prix')),
         category: text(body.category, 'Catégorie', 100),

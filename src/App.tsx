@@ -6,6 +6,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from 'react-dom';
 import { AlertCircle, Check, X, BellRing } from "lucide-react";
+import ConvertySettingsView from './components/ConvertySettingsView';
 import AppShell from "./components/AppShell";
 import BrandLogo from "./components/BrandLogo";
 import { Product, Invoice, DashboardStats, Cafe, Order, OrderStatus, AppNotification, OrderSubmissionResult } from "./types";
@@ -25,12 +26,12 @@ import CafeManagementView from "./components/CafeManagementView";
 import OrdersListView from "./components/OrdersListView";
 import OrderCreateView from "./components/OrderCreateView";
 
-type Tab = "dashboard" | "invoices" | "products" | "catalogue" | "videos" | "tickets" | "create-invoice" | "view-invoice" | "cafes" | "orders" | "create-order";
+type Tab = "shop-settings" | "dashboard" | "invoices" | "products" | "catalogue" | "videos" | "tickets" | "create-invoice" | "view-invoice" | "cafes" | "orders" | "create-order";
 
 export default function App() {
   // Session credentials live in an HttpOnly cookie; this is only a UI marker.
   const [token, setToken] = useState<string | null>("session");
-  const [activeTab, setActiveTab] = useState<Tab>("dashboard");
+  const [activeTab, setActiveTab] = useState<Tab>(new URLSearchParams(window.location.search).has('connexion') ? 'shop-settings' : 'dashboard');
 
   // Current session user context state
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string; role: string } | null>(null);
@@ -462,6 +463,7 @@ export default function App() {
       {orderConfirmation && activeTab === 'orders' && <div className="success-banner" role="status"><Check size={18} /><span>{orderConfirmation}</span><button aria-label="Fermer la confirmation" onClick={() => setOrderConfirmation(null)}><X size={16} /></button></div>}
       {activeTab === 'dashboard' && isCafe && <CafeDashboardView user={currentUser} invoices={invoices} orders={orders} onViewInvoice={handleViewInvoice} onInvoices={() => setActiveTab('invoices')} onOrders={() => setActiveTab('orders')} onProducts={() => setActiveTab('products')} />}
       {activeTab === 'dashboard' && !isCafe && dashboardStats && <DashboardView stats={dashboardStats} cafes={cafes} selectedCafeId={selectedCafeId} onSelectedCafeChange={setSelectedCafeId} onViewInvoice={handleViewInvoice} onNavigateToInvoices={() => setActiveTab('invoices')} onNavigateToProducts={() => setActiveTab('products')} />}
+      {activeTab === 'shop-settings' && !isCafe && <ConvertySettingsView />}
       {activeTab === 'videos' && !isCafe && <div className="admin-videos-page"><h1 className="sr-only">Vidéos ARIMA</h1><CafeCinema onExplore={() => setActiveTab('products')} /></div>}
       {activeTab === 'products' && !isCafe && <ProductCatalogView products={products} cafes={cafes} onAddProduct={handleAddProduct} onEditProduct={handleEditProduct} onDeleteProduct={handleDeleteProduct} />}
       {activeTab === 'products' && isCafe && <CafeProductsView products={products} cafeName={currentUser.name} onStartOrder={() => startOrder()} onOrderProduct={startOrder} onViewCatalogues={() => setActiveTab('catalogue')} />}

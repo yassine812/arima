@@ -9,7 +9,7 @@ import './order-receipt.css';
 
 const BoutiqueLanding = lazy(() => import('./components/BoutiqueLanding'));
 const App = lazy(() => import('./App.tsx'));
-const isBoutique = /^\/boutique(?:\.html|\/)?$/.test(window.location.pathname);
+const isBoutique = /^\/boutique(?:\.html|\/)?$/.test(window.location.pathname) || (window.location.pathname === '/' && !new URLSearchParams(window.location.search).has('espace'));
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

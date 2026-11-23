@@ -26,9 +26,10 @@ const items = [
   { id: 'catalogue', label: 'Catalogue', icon: BookOpen },
   { id: 'videos', label: 'Vidéos', icon: Film, admin: true },
   { id: 'tickets', label: 'Tickets', icon: Ticket, admin: true },
+  { id: 'shop-settings', label: 'Boutique en ligne', icon: ShoppingBag, admin: true },
   { id: 'cafes', label: 'Cafés partenaires', icon: Coffee, admin: true },
 ];
-const titles: Record<string, string> = { dashboard: 'Vue d’ensemble', invoices: 'Factures', orders: 'Commandes', products: 'Nos créations', catalogue: 'Catalogue', videos: 'Vidéos', tickets: 'Tickets', cafes: 'Cafés partenaires', 'create-invoice': 'Nouvelle facture', 'view-invoice': 'Détail de la facture', 'create-order': 'Nouvelle commande' };
+const titles: Record<string, string> = { 'shop-settings': 'Boutique en ligne', dashboard: 'Vue d’ensemble', invoices: 'Factures', orders: 'Commandes', products: 'Nos créations', catalogue: 'Catalogue', videos: 'Vidéos', tickets: 'Tickets', cafes: 'Cafés partenaires', 'create-invoice': 'Nouvelle facture', 'view-invoice': 'Détail de la facture', 'create-order': 'Nouvelle commande' };
 const cafeItems = [
   { id: 'dashboard', label: 'Vue d’ensemble', icon: LayoutDashboard },
   { id: 'products', label: 'Les produits', icon: CakeSlice },
